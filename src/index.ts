@@ -3,4 +3,10 @@ import AdminBot from "./modules/admin_telegram"
 
 dotenv.config()
 
-new AdminBot(process.env.TG_TOKEN).start()
+try {
+    new AdminBot(process.env.TG_TOKEN).start()
+} catch (e) {
+    console.error(`--------------------------------------------------------- ERROR AT ${new Date()} ----------------------------------------------------------------------`)
+    console.error(e)
+}
+
