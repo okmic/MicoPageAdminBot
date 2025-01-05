@@ -1,0 +1,11 @@
+{
+    "apps": [
+        {
+            "name": "micopageadminbot",
+            "script": "./build/index.js",
+            "instances": "max",
+            "exec_mode": "cluster",
+            "autorestart": true
+        }
+    ]
+}

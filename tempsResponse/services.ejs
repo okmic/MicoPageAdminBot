@@ -1,0 +1,14 @@
+*Услуги:*
+<% if (services.length > 0) { %>
+    <% services.forEach(service => { %>
+        - *Услуга:* №<%= service.id %>|MP|
+        *Название:* <%= service.title %>
+        *Изображение:* <%= service.imgUrl %>
+        <% service.items.forEach(item => { %>
+            - *Элемент:* Услуга №<%= service.id %>|MP|Элемент №<%= service.id %>|MP|<%= item.id %>
+            *Текст:* <%= item.text %>
+        <% }) %>
+    <% }) %>
+<% } else { %>
+    Нет доступных услуг.
+<% } %>

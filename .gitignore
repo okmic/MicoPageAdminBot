@@ -1,0 +1,14 @@
+**/.idea
+prisma
+**/node_modules
+**/build
+**/.env
+**/yarn.lock
+**/yarn-error.log
+**/package-lock.json
+**/.env
+**/*.jpg
+**/*.png
+**/*.jpeg
+**/*.webm
+**/*.xslx

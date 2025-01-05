@@ -1,0 +1,12 @@
+*Продукты:*
+<% if (products.length > 0) { %>
+    <% products.forEach(product => { %>
+          - *Продукт:* №<%= product.id %>|MP|
+          *Название:* <%= product.title %>
+          *Описание:* <%= product.description %>
+          *Цена:* <%= product.price %>
+          *Изображение:* <%= product.imgUrl %>
+    <% }) %>
+<% } else { %>
+    Нет доступных продуктов.
+<% } %>
