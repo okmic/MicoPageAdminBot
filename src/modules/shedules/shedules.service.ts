@@ -17,11 +17,31 @@ export default class ShedulesService {
         const path2stor = getPathStoroge("adminTelegramImages")
         
          schedule.scheduleJob(
-                '0 0 0 * * *', async () => {
+                '* * * * * *', async () => {
                     try {
-                        const dirs = await fs.readdir(path2stor)
-                        for (let i = 0; i < dirs.length; i++) {
-                             await fs.rmdir(path2stor + `/${dirs[i]}`, {recursive: true})
+                        const storDir = await fs.readdir(path2stor)
+
+                        for (let sdI = 0; sdI < storDir.length; sdI++) {
+
+                            const childDir = await fs.readdir(path2stor + '/' + storDir[sdI])
+
+                            for (let childDirI = 0; childDirI < childDir.length; childDirI++) {
+                                try {
+                                    const dateInPath = childDir[childDirI].split("_")[1].split(".")[0]
+                                    const [year, month, day] = dateInPath.split('-').map(Number)
+                                    const fileDate = new Date(year, month - 1, day)
+
+                                    if(this.shouldDelete(fileDate)) {
+                                        await fs.rm(
+                                            `${path2stor}/${storDir[sdI]}/${childDir[childDirI]}`, 
+                                            {recursive: true}
+                                        ) 
+                                    }
+                               
+                                    } catch (e) {
+                                    console.error(e)
+                                }
+                            }
                         }
                         console.log(`shedule executed garbageСollectorAdminTelegramFiles at ${new Date()}`)
                     } catch (e) {
@@ -34,4 +54,13 @@ export default class ShedulesService {
         console.log(`shedule initialized garbageСollectorAdminTelegramFiles at ${new Date()}`)
     }
 
+
+    shouldDelete(createdAt: Date): boolean {
+        const currentDate = new Date('2024-06-01')
+    
+        const diffInMilliseconds = currentDate.getTime() - createdAt.getTime()
+        const diffInDays = diffInMilliseconds / (1000 * 60 * 60 * 24)
+    
+        return diffInDays > 30
+    }
 }

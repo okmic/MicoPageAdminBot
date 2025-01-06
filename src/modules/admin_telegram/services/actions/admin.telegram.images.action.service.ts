@@ -61,7 +61,7 @@ export default class AdminTelegramImagesActionService {
             if (parts.length > 1) extension = parts.pop()
         }
 
-        const fileName = `${v4()}.${extension}`
+        const fileName = `${v4()}_${this.formatDate(new Date("2024-05-01"))}.${extension}`
         const savePath = getPathStoroge("adminTelegramImages") + `/${ctx.from.id}`
         //checked dir
         await storageChecked(savePath)
@@ -82,5 +82,13 @@ export default class AdminTelegramImagesActionService {
         const buffer = await response.buffer()
 
         await fs.writeFile(savePath + `/${fileName}`, buffer)
+    }
+
+    private  formatDate(date: Date): string {
+        const year = date.getFullYear()
+        const month = String(date.getMonth() + 1).padStart(2, '0')
+        const day = String(date.getDate()).padStart(2, '0')
+    
+        return `${year}-${month}-${day}`
     }
 }
