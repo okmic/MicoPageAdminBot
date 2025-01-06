@@ -1,9 +1,10 @@
 import { PrismaClient } from "@prisma/client"
-import { AdminContentUpdateMethodNames, KeyContentUpdate, MyContext } from "../../types"
+import { AdminContentUpdateMethodNames, KeyContentUpdate, MyContext } from "../../../types"
 import { InlineKeyboard, NextFunction } from "grammy"
-import adminTelegramResponseText from "../../admin.telegram.response.text"
+import adminTelegramResponseText from "../../admin.telegram.response.text.service"
 
 class TelegramAdminContentUpdateMsgService {
+
     private prisma: PrismaClient
     private ctx: MyContext
     private next: NextFunction
@@ -20,23 +21,18 @@ class TelegramAdminContentUpdateMsgService {
             const waitingSession = this.ctx.session.waitngFromUpdateContent[userId]
             const updateSession = this.ctx.session.updateContent[userId]
 
-            if (waitingSession) {
-                return await this[waitingSession.methodName](false)
-            } 
+            if (waitingSession) return await this[waitingSession.methodName](false)
 
-            if (updateSession) {
-                return await this.handleUpdateSession(updateSession)
-            }
+            if (updateSession) return await this.handleUpdateSession(updateSession)
 
             return await this.next()
 
         } catch (e) {
-            console.error(e)
             throw e
         }
     }
 
-    private async handleUpdateSession(updateType: string) {
+    private async handleUpdateSession(updateType: KeyContentUpdate) {
         switch (updateType) {
             case "someUpdate":
                 return await this.handleSomeUpdate()
@@ -78,6 +74,7 @@ class TelegramAdminContentUpdateMsgService {
     }
 
     private async handlePhone(isFirst: boolean) {
+
         const session = this.ctx.session.waitngFromUpdateContent[this.ctx.from.id]
 
         if (isFirst) return await this.sendConfirmationKeyboard("phone", "Вы хотите обновить телефон на сайте?")
@@ -90,7 +87,9 @@ class TelegramAdminContentUpdateMsgService {
             await this.updateContent(session.key, phone)
             await this.ctx.reply("Номер телефона записан и обновлен на сайте!")
             return
+
         }
+
     }
 
     private async handleEmail(isFirst: boolean) {

@@ -1,8 +1,11 @@
 import { PrismaClient } from "@prisma/client"
-import { MyContext } from "../../types"
+import { MyContext } from "../../../types"
 import { NextFunction } from "grammy"
+import { ErrorTelegramStopExecution } from "../../../../errors"
+import TelegramAdminContentUpdateMsgService from "./telegram.admin.content.update.msg.service"
 
 class TelegramAdminContentUpdateButtonsService {
+
     private prismaClient: PrismaClient
     private ctx: MyContext
     private next: NextFunction
@@ -29,7 +32,14 @@ class TelegramAdminContentUpdateButtonsService {
                     this.ctx.reply("Обновление отменено")
                     return
                 }
-            } 
+            }  if(/updateContent/.test(cbData)) {
+                const {key} = this.getParamsInString(cbData)
+                if(!key) throw new ErrorTelegramStopExecution()
+                delete this.ctx.session.waitngFromUpdateContent[this.ctx.from.id]
+                this.ctx.session.updateContent[this.ctx.from.id] = key
+                await new TelegramAdminContentUpdateMsgService(this.ctx, this.next).handleMsgUpdates()
+                return
+            }
 
         } catch (e) {
             throw e

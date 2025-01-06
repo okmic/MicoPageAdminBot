@@ -1,8 +1,8 @@
 import { Bot } from "grammy";
-import { MyContext } from "./types";
+import { MyContext } from "../types";
 import TelegramAdminContentUpdateMsgService from "./content/update/telegram.admin.content.update.msg.service";
 
-export default class AdminTelegramMessageAction {
+export default class AdminTelegramMessageActionService {
 
     bot: Bot<MyContext>
 

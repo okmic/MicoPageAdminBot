@@ -12,3 +12,4 @@ prisma
 **/*.jpeg
 **/*.webm
 **/*.xslx
+**/storage

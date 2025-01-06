@@ -1,4 +1,4 @@
-class AdminTelegramResponseText {
+class AdminTelegramResponseTextService {
     
     public msgErrorValidPhone
     public msgErrorValidEmail
@@ -10,4 +10,4 @@ class AdminTelegramResponseText {
 
 }
 
-export default new AdminTelegramResponseText()
+export default new AdminTelegramResponseTextService()
