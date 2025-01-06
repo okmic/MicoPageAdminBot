@@ -12,6 +12,7 @@ export async function storageChecked(dirPath: string) {
 }
 
 export function getPathStoroge(storageType?: "adminTelegramImages" | "PublicPathToTelegramImages") {
+    
     const storPath = join(__dirname, "..", "..", "storage") 
 
     switch(storageType) {
