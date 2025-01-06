@@ -11,11 +11,12 @@ export async function storageChecked(dirPath: string) {
     }
 }
 
-export function getPathStoroge(storageType?: "adminTelegramImages") {
+export function getPathStoroge(storageType?: "adminTelegramImages" | "PublicPathToTelegramImages") {
     const storPath = join(__dirname, "..", "..", "storage") 
-    
+
     switch(storageType) {
-        case "adminTelegramImages": storPath + `/mico-page/img/telegram/admin`
+        case "adminTelegramImages": return storPath + `/mico-page/img/telegram/admin`
+        case "PublicPathToTelegramImages": return process.env.MICO_PAGE_PUBLIC_URL + `/mico-page/img/telegram/admin`
         default: return storPath
     }
 }

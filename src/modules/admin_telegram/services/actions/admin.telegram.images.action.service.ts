@@ -1,12 +1,12 @@
 import { Bot } from "grammy"
 import { MyContext } from "../../types"
 import fs from 'fs/promises'
-import path from 'path'
 import fetch from 'node-fetch'
 import { getPathStoroge, storageChecked } from "../../../../helper"
 import { v4 } from "uuid"
 
 export default class AdminTelegramImagesActionService {
+
     bot: Bot<MyContext>
 
     constructor(bot) {
@@ -17,9 +17,10 @@ export default class AdminTelegramImagesActionService {
         try {
             this.bot.on(':photo', async (ctx) => {
                 try {
-                    await this.saveImage(ctx)
+                    const resultPath = await this.saveImage(ctx)
+                    return await ctx.reply(resultPath)
                 } catch (e) {
-                    ctx.reply("Произошла ошибка при сохранении изображения.")
+                    return await ctx.reply("Произошла ошибка при сохранении изображения.")
                 }
             })
 
@@ -28,7 +29,11 @@ export default class AdminTelegramImagesActionService {
                     const document = ctx.message.document
 
                     if (this.isImage(document.mime_type)) {
-                        await this.saveImage(ctx, document.mime_type)
+                        
+                        const resultPath = await this.saveImage(ctx, document.mime_type)
+
+                        return await ctx.reply(resultPath)
+
                     } else {
                         ctx.reply("Этот документ не является изображением.")
                     }
@@ -58,11 +63,13 @@ export default class AdminTelegramImagesActionService {
 
         const fileName = `${v4()}.${extension}`
         const savePath = getPathStoroge("adminTelegramImages") + `/${ctx.from.id}`
-
         //checked dir
         await storageChecked(savePath)
-
+        
         await this.downloadFile(file.file_path, savePath, fileName)
+        const resultPath = getPathStoroge("PublicPathToTelegramImages") + `/${ctx.from.id}/${fileName}`
+
+        return resultPath
     }
     
     async downloadFile(tgFilePath: string, savePath: string, fileName: string) {
