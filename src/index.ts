@@ -1,13 +1,15 @@
 import dotenv from 'dotenv'
 import AdminBot from "./modules/admin_telegram"
-import { storageChecked } from './helper'
+import { getPathStoroge, storageChecked } from './helper'
 dotenv.config()
 
 try {
-
-    storageChecked(process.env.PATH2STORAGE)
-    storageChecked(process.env.PATH2STORAGE + "/img/")
-    storageChecked(process.env.PATH2STORAGE + "/img/client/")
+    const path2stor = getPathStoroge()
+    storageChecked(path2stor)
+    storageChecked(path2stor + "/mico-page")
+    storageChecked(path2stor + "/mico-page/img")
+    storageChecked(path2stor + "/mico-page/img/telegram")
+    storageChecked(path2stor + "/mico-page/img/telegram/admin")
 
     console.log(`MicoPageAdminBot started at ${new Date()}`)
 

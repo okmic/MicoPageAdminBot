@@ -9,6 +9,7 @@ export async function updateAdminContentMiddleWare(ctx: MyContext, next: NextFun
         if (!ctx.message || !ctx.message.text) return await next()
 
         const text = ctx.message.text.toLocaleLowerCase()
+        
         let savedKey
 
         for (const kuw of keysUpdateWords) {

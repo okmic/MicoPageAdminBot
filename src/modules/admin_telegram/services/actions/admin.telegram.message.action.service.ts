@@ -1,6 +1,6 @@
 import { Bot } from "grammy";
-import { MyContext } from "../types";
-import TelegramAdminContentUpdateMsgService from "./content/update/telegram.admin.content.update.msg.service";
+import { MyContext } from "../../types";
+import TelegramAdminContentUpdateMsgService from "../content/update/telegram.admin.content.update.msg.service";
 
 export default class AdminTelegramMessageActionService {
 
@@ -12,10 +12,9 @@ export default class AdminTelegramMessageActionService {
 
     handleMessage() {
         try {
-            
+
             this.bot.on("msg", async (ctx, next) => {
                 await new TelegramAdminContentUpdateMsgService(ctx, next).handleMsgUpdates()
-                console.log("2")
             })
 
         } catch (e) {
