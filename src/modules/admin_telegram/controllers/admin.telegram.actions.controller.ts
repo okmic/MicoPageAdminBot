@@ -2,7 +2,7 @@ import { Bot } from "grammy"
 import { MyContext } from "../types"
 import AdminTelegramMessageActionService from "../services/actions/admin.telegram.message.action.service"
 import AdminTelegramButtonsActionService from "../services/actions/admin.telegram.buttons.action.service"
-import AdminTelegramImagesActionService from "../services/actions/admin.telegram.images.action.service"
+import AdminTelegramFilesActionService from "../services/actions/admin.telegram.files.action.service"
 
 class AdminTelegramActionsController {
 
@@ -15,7 +15,7 @@ class AdminTelegramActionsController {
     async handleActions() {
       new AdminTelegramMessageActionService(this.bot).handleMessage()
       new AdminTelegramButtonsActionService(this.bot).handleButtons()
-      new AdminTelegramImagesActionService(this.bot).handleImages()
+      new AdminTelegramFilesActionService(this.bot).handleFiles()
     }
 
 }

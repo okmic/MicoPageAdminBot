@@ -17,7 +17,7 @@ export default class ShedulesService {
         const path2stor = getPathStoroge("adminTelegramImages")
         
          schedule.scheduleJob(
-                '* * * * * *', async () => {
+                '0 0 0 * * *', async () => {
                     try {
                         const storDir = await fs.readdir(path2stor)
 
@@ -39,7 +39,7 @@ export default class ShedulesService {
                                     }
                                
                                     } catch (e) {
-                                    console.error(e)
+                                        console.error(e)
                                 }
                             }
                         }

@@ -4,8 +4,9 @@ import fs from 'fs/promises'
 import fetch from 'node-fetch'
 import { getPathStoroge, storageChecked } from "../../../../helper"
 import { v4 } from "uuid"
+import xlsxService from "../../../xlsx/xlsx.service"
 
-export default class AdminTelegramImagesActionService {
+export default class AdminTelegramFilesActionService {
 
     bot: Bot<MyContext>
 
@@ -13,8 +14,9 @@ export default class AdminTelegramImagesActionService {
         this.bot = bot
     }
 
-    handleImages() {
+    handleFiles() {
         try {
+            
             this.bot.on(':photo', async (ctx) => {
                 try {
                     const resultPath = await this.saveImage(ctx)
@@ -34,8 +36,15 @@ export default class AdminTelegramImagesActionService {
 
                         return await ctx.reply(resultPath)
 
+                    } else if (this.isXlsx(document.mime_type)) {
+
+                        const resultPath = await this.saveXlsx(ctx)
+
+                        await ctx.reply('Вы загрузили файл формата XLSX!')
+
+                        
                     } else {
-                        ctx.reply("Этот документ не является изображением.")
+                        await ctx.reply('Неизвестный формат файла');
                     }
                 } catch (e) {
                     ctx.reply("Произошла ошибка при сохранении документа.")
@@ -45,6 +54,13 @@ export default class AdminTelegramImagesActionService {
         } catch (e) {
             console.error("Ошибка в обработке изображений:", e)
         }
+    }
+
+    isXlsx(mimeType: string): boolean {
+        return (
+            mimeType === 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet' ||
+            mimeType === 'application/vnd.ms-excel'
+        )
     }
 
     isImage(mimeType: string): boolean {
@@ -70,6 +86,22 @@ export default class AdminTelegramImagesActionService {
         const resultPath = getPathStoroge("PublicPathToTelegramImages") + `/${ctx.from.id}/${fileName}`
 
         return resultPath
+    }
+
+    async saveXlsx(ctx: MyContext) {
+        try {
+            const file = await ctx.getFile()
+
+            const fileName = `${v4()}_${this.formatDate(new Date("2024-05-01"))}.xlsx`
+            const savePath = getPathStoroge("adminTelegramXlsx") + `/${ctx.from.id}`
+            await storageChecked(savePath)
+            
+            await this.downloadFile(file.file_path, savePath, fileName)
+    
+            console.log(xlsxService.readXlsx(savePath + `/${fileName}`))
+        } catch (e) {
+            console.error(e)
+        }
     }
     
     async downloadFile(tgFilePath: string, savePath: string, fileName: string) {
