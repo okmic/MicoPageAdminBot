@@ -13,9 +13,9 @@ class AdminTelegramActionsController {
     }
 
     async handleActions() {
+      new AdminTelegramFilesActionService(this.bot).handleFiles()
       new AdminTelegramMessageActionService(this.bot).handleMessage()
       new AdminTelegramButtonsActionService(this.bot).handleButtons()
-      new AdminTelegramFilesActionService(this.bot).handleFiles()
     }
 
 }

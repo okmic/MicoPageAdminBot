@@ -2,6 +2,7 @@ import { PrismaClient } from "@prisma/client"
 import { AdminContentUpdateMethodNames, KeyContentUpdate, MyContext } from "../../../types"
 import { InlineKeyboard, NextFunction } from "grammy"
 import adminTelegramResponseText from "../../admin.telegram.response.text.service"
+import { join } from "path"
 
 class TelegramAdminContentUpdateMsgService {
 
@@ -40,6 +41,8 @@ class TelegramAdminContentUpdateMsgService {
                 return await this.handlePhone(true)
             case "email":
                 return await this.handleEmail(true)
+            case "products":
+                return await this.handleProducts(true)
             default:
                 return await this.next()
         }
@@ -71,6 +74,25 @@ class TelegramAdminContentUpdateMsgService {
 
         await this.ctx.reply("Выберите раздел для обновления:", { reply_markup: keyboard })
 
+    }
+
+    private async handleProducts(isFirst: boolean) {
+
+        const session = this.ctx.session.waitngFromUpdateContent[this.ctx.from.id]
+
+        if (isFirst) return await this.sendConfirmationKeyboard("products", "Вы хотите обновить список продуктов на сайте?")
+        
+        if (session.products && session.products.startAgreement && session.products.startAgreement) {
+            if(this.ctx.message.text === "stop") {
+
+                delete this.ctx.session.waitngFromUpdateContent[this.ctx.from.id]
+                delete this.ctx.session.updateContent[this.ctx.from.id]
+                await this.ctx.reply(`Действия отменено!`)
+                return 
+                
+            }
+            await this.ctx.reply(`Необходим файл xlsx!\n\nДля отмены действия просто напишите мне "stop"!`)
+        }
     }
 
     private async handlePhone(isFirst: boolean) {

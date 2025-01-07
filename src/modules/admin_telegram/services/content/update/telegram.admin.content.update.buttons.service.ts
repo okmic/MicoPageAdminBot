@@ -1,8 +1,10 @@
 import { PrismaClient } from "@prisma/client"
 import { MyContext } from "../../../types"
-import { NextFunction } from "grammy"
+import { InputFile, NextFunction } from "grammy"
 import { ErrorTelegramStopExecution } from "../../../../errors"
 import TelegramAdminContentUpdateMsgService from "./telegram.admin.content.update.msg.service"
+import { join } from "path"
+import fs from "fs/promises"
 
 class TelegramAdminContentUpdateButtonsService {
 
@@ -23,7 +25,18 @@ class TelegramAdminContentUpdateButtonsService {
             if(/adminUpdateContentAgreement/.test(cbData)) {
                 const {key, uAnswer} = this.getParamsInString(cbData)
                 if(!key || !uAnswer) return
+
                 if(uAnswer === "true") {
+
+                    if(key === "products") {
+                       try {
+                            await this.ctx.reply("Пожалуйста, отправьте мне файл в формате xlsx с продуктами. Вот пример того, как он должен выглядеть:")
+                            await this.ctx.replyWithDocument(new InputFile(join(__dirname, "..", "..", "..", "..", "..", "..", "tempsResponse", "temp-products.xlsx")))
+                       } catch (e) {
+                            console.error(e)
+                       }
+                    }
+
                     await this.ctx.reply("Введите ваши данные ниже 👇")
                     this.ctx.session.waitngFromUpdateContent[this.ctx.from.id][key] = {startAgreement: true}
                     return

@@ -1,5 +1,5 @@
 import { Bot } from "grammy"
-import { MyContext } from "../../types"
+import { KeyContentUpdate, MyContext } from "../../types"
 import fs from 'fs/promises'
 import fetch from 'node-fetch'
 import { getPathStoroge, storageChecked } from "../../../../helper"
@@ -16,7 +16,7 @@ export default class AdminTelegramFilesActionService {
 
     handleFiles() {
         try {
-            
+
             this.bot.on(':photo', async (ctx) => {
                 try {
                     const resultPath = await this.saveImage(ctx)
@@ -38,13 +38,15 @@ export default class AdminTelegramFilesActionService {
 
                     } else if (this.isXlsx(document.mime_type)) {
 
-                        const resultPath = await this.saveXlsx(ctx)
+                        const key = ctx.session.updateContent[ctx.from.id]
+                        if(!key || !["products", "services", "works", "socialMidea"].includes(key)) return
+                           
+                        await this.saveXlsx(ctx, key as "products" | "services" | "works" | "socialMidea")
 
-                        await ctx.reply('Вы загрузили файл формата XLSX!')
 
-                        
+                        return
                     } else {
-                        await ctx.reply('Неизвестный формат файла');
+                        await ctx.reply('Неизвестный формат файла')
                     }
                 } catch (e) {
                     ctx.reply("Произошла ошибка при сохранении документа.")
@@ -88,17 +90,19 @@ export default class AdminTelegramFilesActionService {
         return resultPath
     }
 
-    async saveXlsx(ctx: MyContext) {
+    async saveXlsx(ctx: MyContext, key: "products" | "services" | "works" | "socialMidea") {
         try {
             const file = await ctx.getFile()
-
+            
             const fileName = `${v4()}_${this.formatDate(new Date("2024-05-01"))}.xlsx`
             const savePath = getPathStoroge("adminTelegramXlsx") + `/${ctx.from.id}`
             await storageChecked(savePath)
             
             await this.downloadFile(file.file_path, savePath, fileName)
     
-            console.log(xlsxService.readXlsx(savePath + `/${fileName}`))
+            const result = await xlsxService.readXlsx(savePath + `/${fileName}`, key)
+            
+            return await ctx.reply(result)
         } catch (e) {
             console.error(e)
         }
