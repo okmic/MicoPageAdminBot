@@ -11,13 +11,47 @@ class TelegramAdminHelper {
         { word: "почту", key: "email" },
         { word: "телефон", key: "phone" },
         { word: "phone", key: "phone" },
+
         { word: "продукт", key: "products" },
         { word: "продукты", key: "products" },
         { word: "товары", key: "products" },
-        { word: "phone", key: "phone" },
         { word: "листинг", key: "products" },
         { word: "products", key: "products" },
         { word: "product", key: "products" },
+
+        { word: "Название компании", key: "logoName" },
+        { word: "Главный заголовок", key: "logoName" },
+
+        { word: "Логотип", key: "logoImgUrl" },
+        { word: "logo", key: "logoImgUrl" },
+        { word: "Главная изображение", key: "logoImgUrl" },
+        { word: "Главная картинка", key: "logoImgUrl" },
+
+        { word: "Описание компании", key: "companyDescription" },
+        { word: "Описание", key: "companyDescription" },
+        { word: "decsr", key: "companyDescription" },
+        { word: "decsription", key: "companyDescription" },
+
+        { word: "адрес", key: "address" },
+        { word: "address", key: "address" },
+
+
+        { word: "Заголовок главного блока", key: "mainBlockTitle" },
+        { word: "Описание главного", key: "mainBlockDescription" },
+
+        { word: "о работе", key: "works" },
+        { word: "works", key: "works" },
+        { word: "work", key: "works" },
+
+        { word: "услуги", key: "services" },
+        { word: "service", key: "services" },
+        { word: "services", key: "services" },
+
+        { word: "cоц сети", key: "socialMedia" },
+        { word: "сети", key: "socialMedia" },
+        { word: "соц", key: "socialMedia" },
+        { word: "social", key: "socialMedia" },
+        { word: "social media", key: "socialMedia" },
     ]
 }
 
