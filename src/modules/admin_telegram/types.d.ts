@@ -1,6 +1,7 @@
 import { Context, SessionFlavor } from "grammy"
-import { ITelegramAdminContentUpdateHandleEmail, ITelegramAdminContentUpdateHandlePhone, ITelegramAdminContentUpdateHandleProducts } from "./services/content/update/types"
-import { Content, SiteProducts } from "@prisma/client"
+import {  ITelegramAdminContentUpdateHandleMassUpdateWithSite, ITelegramAdminContentUpdateHandleString } from "./services/content/update/types"
+import { Content } from "@prisma/client"
+import { TKeysXlsxContentMassUpdate } from "../xlsx/types"
 
 export interface SessionData {
 
@@ -12,21 +13,33 @@ export interface SessionData {
     [userId: string]: {
       key: KeyContentUpdate
       methodName: AdminContentUpdateMethodNames
-      phone?: ITelegramAdminContentUpdateHandlePhone
-      email?: ITelegramAdminContentUpdateHandleEmail
-      products?: ITelegramAdminContentUpdateHandleProducts
+
+      logoName?: ITelegramAdminContentUpdateHandleString
+      logoImgUrl?: ITelegramAdminContentUpdateHandleString
+      createdAt?: ITelegramAdminContentUpdateHandleString
+      companyDescription?: ITelegramAdminContentUpdateHandleString
+      address?: ITelegramAdminContentUpdateHandleString
+      phone?: ITelegramAdminContentUpdateHandleString
+      email?: ITelegramAdminContentUpdateHandleString
+      mainBlockTitle?: ITelegramAdminContentUpdateHandleString
+      mainBlockDescription?: ITelegramAdminContentUpdateHandleString
+      mainBlockImgUrl?: ITelegramAdminContentUpdateHandleString
+
+      products?: ITelegramAdminContentUpdateHandleMassUpdateWithSite
+      services?: ITelegramAdminContentUpdateHandleMassUpdateWithSite
+      works?: ITelegramAdminContentUpdateHandleMassUpdateWithSite
+      socialMidea?: ITelegramAdminContentUpdateHandleMassUpdateWithSite
     }
   }
 
 }
 
-
-export type AdminContentUpdateMethodNames = "handlePhone" | "handleEmail" | "handleProducts"
+export type AdminContentUpdateMethodNames = "handlePhone" | "handleEmail" | "handleUpdateMassFileXlsx"
 
 interface MyContext extends Context, SessionFlavor<SessionData> {
 }
 
-export type KeyContentUpdate = keyof Content | "someUpdate"  | "products" | "services" | "works" | "socialMidea"
+export type KeyContentUpdate = keyof Content | "someUpdate"  | TKeysXlsxContentMassUpdate
 
 export interface KeyContentUpdateWord {
     key: KeyContentUpdate

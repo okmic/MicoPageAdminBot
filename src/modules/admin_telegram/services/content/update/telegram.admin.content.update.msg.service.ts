@@ -2,18 +2,20 @@ import { PrismaClient } from "@prisma/client"
 import { AdminContentUpdateMethodNames, KeyContentUpdate, MyContext } from "../../../types"
 import { InlineKeyboard, NextFunction } from "grammy"
 import adminTelegramResponseText from "../../admin.telegram.response.text.service"
-import { join } from "path"
+import { TKeysXlsxContentMassUpdate } from "../../../../xlsx/types"
 
 class TelegramAdminContentUpdateMsgService {
 
     private prisma: PrismaClient
     private ctx: MyContext
     private next: NextFunction
+    private successMsg: string
 
     constructor(ctx: MyContext, next: NextFunction) {
         this.prisma = new PrismaClient()
         this.ctx = ctx
         this.next = next
+        this.successMsg = "Записал и обновил на сайте!"
     }
 
     async handleMsgUpdates() {
@@ -22,7 +24,8 @@ class TelegramAdminContentUpdateMsgService {
             const waitingSession = this.ctx.session.waitngFromUpdateContent[userId]
             const updateSession = this.ctx.session.updateContent[userId]
 
-            if (waitingSession) return await this[waitingSession.methodName](false)
+            //@ts-ignore
+            if (waitingSession) return await this[waitingSession.methodName](false, waitingSession.key, "Вы планируете провести массовое обновление этого раздела сайта?")
 
             if (updateSession) return await this.handleUpdateSession(updateSession)
 
@@ -41,8 +44,28 @@ class TelegramAdminContentUpdateMsgService {
                 return await this.handlePhone(true)
             case "email":
                 return await this.handleEmail(true)
+            case "logoName":
+                return await this.handleLogoName(true)
+            case "logoImgUrl":
+                return await this.handleLogoImgUrl(true)
+            case "companyDescription":
+                return await this.handleCompanyDescription(true)
+            case "address":
+                return await this.handleAddress(true)
+            case "mainBlockTitle":
+                return await this.handleMainBlockTitle(true)
+            case "mainBlockDescription":
+                return await this.handleMainBlockDescription(true)
+            case "mainBlockImgUrl":
+                return await this.handleMainBlockImgUrl(true)
             case "products":
-                return await this.handleProducts(true)
+                return await this.handleUpdateMassFileXlsx(true, updateType, "Вы планируете провести массовое обновление этого раздела сайта?")
+            case "works":
+                return await this.handleUpdateMassFileXlsx(true, updateType, "Вы планируете провести массовое обновление этого раздела сайта?")
+            case "services":
+                return await this.handleUpdateMassFileXlsx(true, updateType, "Вы планируете провести массовое обновление этого раздела сайта?")
+            case "socialMedia":
+                return await this.handleUpdateMassFileXlsx(true, updateType, "Вы планируете провести массовое обновление этого раздела сайта?")
             default:
                 return await this.next()
         }
@@ -73,16 +96,15 @@ class TelegramAdminContentUpdateMsgService {
             .text("Блок Продуктов", "updateContent key=products")
 
         await this.ctx.reply("Выберите раздел для обновления:", { reply_markup: keyboard })
-
     }
 
-    private async handleProducts(isFirst: boolean) {
+    private async handleUpdateMassFileXlsx(isFirst: boolean, key: TKeysXlsxContentMassUpdate, responseMsg: string) {
 
         const session = this.ctx.session.waitngFromUpdateContent[this.ctx.from.id]
 
-        if (isFirst) return await this.sendConfirmationKeyboard("products", "Вы хотите обновить список продуктов на сайте?")
+        if (isFirst) return await this.sendConfirmationKeyboard(key,responseMsg)
         
-        if (session.products && session.products.startAgreement && session.products.startAgreement) {
+        if (session[key] && session[key].startAgreement && session[key].startAgreement) {
             if(this.ctx.message.text === "stop") {
 
                 delete this.ctx.session.waitngFromUpdateContent[this.ctx.from.id]
@@ -101,17 +123,116 @@ class TelegramAdminContentUpdateMsgService {
 
         if (isFirst) return await this.sendConfirmationKeyboard("phone", "Вы хотите обновить телефон на сайте?")
         
-        if (session.phone && session.phone.startAgreement && !session.phone.phoneNumber) {
+        if (session.phone && session.phone.startAgreement && !session.phone.value) {
             
             const phone = this.validatePhone(this.ctx.message.text)
             if (!phone) return await this.ctx.reply(adminTelegramResponseText.msgErrorValidPhone)
 
             await this.updateContent(session.key, phone)
-            await this.ctx.reply("Номер телефона записан и обновлен на сайте!")
+            await this.ctx.reply(this.successMsg)
+           
+            return
+        }
+    }
+
+    private async handleLogoName(isFirst: boolean) {
+
+        const session = this.ctx.session.waitngFromUpdateContent[this.ctx.from.id]
+
+        if (isFirst) return await this.sendConfirmationKeyboard("logoName", "Вы хотите обновить название компании?")
+        
+        if (session.logoName && session.logoName.startAgreement && !session.logoName.value) {
+        
+            await this.updateContent(session.key, this.ctx.message.text)
+            await this.ctx.reply(this.successMsg)
             return
 
         }
+    }
 
+    private async handleLogoImgUrl(isFirst: boolean) {
+
+        const session = this.ctx.session.waitngFromUpdateContent[this.ctx.from.id]
+
+        if (isFirst) return await this.sendConfirmationKeyboard("phone", "Вы хотите обновить ссылку на логотип (изображение)?")
+        
+        if (session.logoImgUrl && session.logoImgUrl.startAgreement && !session.logoImgUrl.value) {
+
+                await this.updateContent(session.key, this.ctx.message.text)
+                await this.ctx.reply(this.successMsg)
+                return
+        }
+    }
+    
+    private async handleMainBlockTitle(isFirst: boolean) {
+
+        const session = this.ctx.session.waitngFromUpdateContent[this.ctx.from.id]
+
+        if (isFirst) return await this.sendConfirmationKeyboard("mainBlockTitle", "Вы хотите обновить заголовок основного блока?")
+        
+        if (session.mainBlockTitle && session.mainBlockTitle.startAgreement && !session.mainBlockTitle.value) {
+                await this.updateContent(session.key, this.ctx.message.text)
+                await this.ctx.reply(this.successMsg)
+                return
+        }
+    }
+
+    private async handleMainBlockDescription(isFirst: boolean) {
+
+        const session = this.ctx.session.waitngFromUpdateContent[this.ctx.from.id]
+
+        if (isFirst) return await this.sendConfirmationKeyboard("mainBlockDescription", "Вы хотите обновить описание основного блока?")
+        
+        if (session.mainBlockDescription && session.mainBlockDescription.startAgreement && !session.mainBlockDescription.value) {
+            await this.updateContent(session.key, this.ctx.message.text)
+            await this.ctx.reply(this.successMsg)
+            return
+        }
+    }
+
+    private async handleMainBlockImgUrl(isFirst: boolean) {
+
+        const session = this.ctx.session.waitngFromUpdateContent[this.ctx.from.id]
+
+        if (isFirst) return await this.sendConfirmationKeyboard("mainBlockImgUrl", "Вы хотите обновить изображение (ссылку на изображение) основного блока?")
+        
+        if (session.mainBlockImgUrl && session.mainBlockImgUrl.startAgreement && !session.mainBlockImgUrl.value) {
+
+                await this.updateContent(session.key, this.ctx.message.text)
+                await this.ctx.reply(this.successMsg)
+                return
+
+        }
+    }
+    
+    private async handleCompanyDescription(isFirst: boolean) {
+
+        const session = this.ctx.session.waitngFromUpdateContent[this.ctx.from.id]
+
+        if (isFirst) return await this.sendConfirmationKeyboard("companyDescription", "Вы хотите обновить описание компании?")
+        
+        if (session.companyDescription && session.companyDescription.startAgreement && !session.companyDescription.value) {
+            
+            await this.updateContent(session.key, this.ctx.message.text)
+            await this.ctx.reply(this.successMsg)
+            return
+
+        }
+    }
+
+    private async handleAddress(isFirst: boolean) {
+
+        const session = this.ctx.session.waitngFromUpdateContent[this.ctx.from.id]
+
+        if (isFirst) return await this.sendConfirmationKeyboard("address", "Вы хотите обновить адрес?")
+        
+        if (session.address && session.address.startAgreement && !session.address.value) {
+            
+            await this.updateContent(session.key, this.ctx.message.text)
+            await this.ctx.reply(this.successMsg)
+            return
+
+        }
     }
 
     private async handleEmail(isFirst: boolean) {
@@ -121,12 +242,12 @@ class TelegramAdminContentUpdateMsgService {
             return await this.sendConfirmationKeyboard("email", "Вы хотите обновить почту на сайте?")
         } 
 
-        if (session.email && session.email.startAgreement && !session.email.email) {
+        if (session.email && session.email.startAgreement && !session.email.value) {
             const email = this.validateEmail(this.ctx.message.text)
             if (!email) return await this.ctx.reply(adminTelegramResponseText.msgErrorValidEmail)
 
             await this.updateContent(session.key, email)
-            await this.ctx.reply("Почта записана и обновлена на сайте!")
+            await this.ctx.reply(this.successMsg)
             return
         }
     }

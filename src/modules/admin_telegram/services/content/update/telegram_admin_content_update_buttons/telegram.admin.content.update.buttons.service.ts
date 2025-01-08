@@ -1,10 +1,10 @@
 import { PrismaClient } from "@prisma/client"
-import { MyContext } from "../../../types"
+import { MyContext } from "../../../../types"
 import { InputFile, NextFunction } from "grammy"
-import { ErrorTelegramStopExecution } from "../../../../errors"
-import TelegramAdminContentUpdateMsgService from "./telegram.admin.content.update.msg.service"
+import { ErrorTelegramStopExecution } from "../../../../../errors"
+import TelegramAdminContentUpdateMsgService from "../telegram.admin.content.update.msg.service"
 import { join } from "path"
-import fs from "fs/promises"
+import TelegramAdminContentUpdateButtonsXlsxService from "./telegram.admin.content.update.buttons.xlsx.service"
 
 class TelegramAdminContentUpdateButtonsService {
 
@@ -22,22 +22,16 @@ class TelegramAdminContentUpdateButtonsService {
         try {
             const cbData = this.ctx.callbackQuery.data
             
+            console.log(cbData)
             if(/adminUpdateContentAgreement/.test(cbData)) {
                 const {key, uAnswer} = this.getParamsInString(cbData)
                 if(!key || !uAnswer) return
 
                 if(uAnswer === "true") {
+                    //checked update with file actions
+                    await new TelegramAdminContentUpdateButtonsXlsxService(this.ctx, key).handleActionsXlsxContents()
 
-                    if(key === "products") {
-                       try {
-                            await this.ctx.reply("Пожалуйста, отправьте мне файл в формате xlsx с продуктами. Вот пример того, как он должен выглядеть:")
-                            await this.ctx.replyWithDocument(new InputFile(join(__dirname, "..", "..", "..", "..", "..", "..", "tempsResponse", "temp-products.xlsx")))
-                       } catch (e) {
-                            console.error(e)
-                       }
-                    }
-
-                    await this.ctx.reply("Введите ваши данные ниже 👇")
+                    await this.ctx.reply("Жду ваших данных! 👇")
                     this.ctx.session.waitngFromUpdateContent[this.ctx.from.id][key] = {startAgreement: true}
                     return
                 } else {

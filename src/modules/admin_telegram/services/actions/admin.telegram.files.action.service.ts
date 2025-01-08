@@ -5,6 +5,7 @@ import fetch from 'node-fetch'
 import { getPathStoroge, storageChecked } from "../../../../helper"
 import { v4 } from "uuid"
 import xlsxService from "../../../xlsx/xlsx.service"
+import { TKeysXlsxContentMassUpdate } from "../../../xlsx/types"
 
 export default class AdminTelegramFilesActionService {
 
@@ -41,9 +42,8 @@ export default class AdminTelegramFilesActionService {
                         const key = ctx.session.updateContent[ctx.from.id]
                         if(!key || !["products", "services", "works", "socialMidea"].includes(key)) return
                            
-                        await this.saveXlsx(ctx, key as "products" | "services" | "works" | "socialMidea")
-
-
+                        await this.saveXlsx(ctx, key as TKeysXlsxContentMassUpdate)
+                        
                         return
                     } else {
                         await ctx.reply('Неизвестный формат файла')
@@ -90,7 +90,7 @@ export default class AdminTelegramFilesActionService {
         return resultPath
     }
 
-    async saveXlsx(ctx: MyContext, key: "products" | "services" | "works" | "socialMidea") {
+    async saveXlsx(ctx: MyContext, key:TKeysXlsxContentMassUpdate) {
         try {
             const file = await ctx.getFile()
             

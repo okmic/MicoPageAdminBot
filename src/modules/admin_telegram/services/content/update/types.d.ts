@@ -1,14 +1,10 @@
-export interface ITelegramAdminContentUpdateHandlePhone {
-    phoneNumber?: string
+export interface ITelegramAdminContentUpdateHandleString {
+    value?: string
     startAgreement: boolean
 }
 
-export interface ITelegramAdminContentUpdateHandleEmail {
-    email?: string
-    startAgreement: boolean
-}
-
-export interface ITelegramAdminContentUpdateHandleProducts {
+export interface ITelegramAdminContentUpdateHandleMassUpdateWithSite {
     startAgreement: boolean
     fileDownloaded: boolean
 }
+

@@ -13,7 +13,7 @@ class TelegramAdminContentService {
     }
 
     private async renderTemplate(templateName: string, data: object): Promise<string> {
-        const templatePath = path.join(__dirname, "..", "..", "..", "..", 'tempsResponse', `${templateName}.ejs`)
+        const templatePath = path.join(__dirname, "..", "..", "..", "..", 'temps', `${templateName}.ejs`)
         const template = fs.readFileSync(templatePath, 'utf-8')
         return ejs.render(template, data)
     }

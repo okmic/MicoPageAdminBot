@@ -1,16 +1,20 @@
 import xlsx from 'xlsx'
-import { ProductsXLSXI } from './types'
+import { ProductsXLSXI, ServicesXLSXI, SocialXLSXI, TKeysXlsxContentMassUpdate, WorksXLSXI } from './types'
 import { PrismaClient } from '@prisma/client'
 
 class XlsxService {
-
+    
     private prisma: PrismaClient
+    private successMsg
+    private errorMsg
 
     constructor () {
         this.prisma = new PrismaClient()
+        this.successMsg = "Записал и обновил на сайте"
+        this.errorMsg = "Произошла ошибка при проверке данных, перепроверьте пожалуйста файл и удостоверитесь в порядке на предмет правильности заголовков и записанных в них данных"
     }
 
-    async readXlsx(filePath: string, key: "products" | "services" | "works" | "socialMidea"): Promise<string> {
+    async readXlsx(filePath: string, key: TKeysXlsxContentMassUpdate): Promise<string> {
         try {
 
             const workbook = xlsx.readFile(filePath)
@@ -19,68 +23,132 @@ class XlsxService {
     
             switch(key) {
                 case 'products': {
-                    const validData = this.isValidProducts(data as ProductsXLSXI[])
-                    if(validData) {
-                        await this.saveProducts(data as ProductsXLSXI[])
-                        return "Записал и обновил на сайте"
-                    } else "Произошла ошибка при проверке данных, перепроверьте пожалуйста файл и удостоверитесь в порядке на предмет правильности заголовков и записанных в них данных"
+                    const isValidProducts = this.isValidProducts(data as ProductsXLSXI[])
+                    if(isValidProducts) {
+                        await this.saveContent(data as ProductsXLSXI[], "products")
+                        return this.successMsg
+                    } else return this.errorMsg
                 }
-                case 'services': break
-                case 'works': break
-                case 'socialMidea': break
+                case 'works': {
+                    const isValidWorks = this.isValidWorks(data as WorksXLSXI[])
+                    if(isValidWorks) {
+                        await this.saveContent(data as WorksXLSXI[], "works")
+                        return this.successMsg
+                    } else return this.errorMsg
+                }
+                case 'services': {
+                    const isValidServices = this.isValidService(data as ServicesXLSXI[])
+                    if(isValidServices) {
+                        await this.saveContent(data as ServicesXLSXI[], "services")
+                        return this.successMsg
+                    } else return this.errorMsg
+                }
+                case 'socialMedia': {
+                    const isValidSocialMedia = this.isValidSocialMedia(data as SocialXLSXI[])
+                    if(isValidSocialMedia) {
+                        await this.saveContent(data as SocialXLSXI[], "socialMedia")
+                        return this.successMsg
+                    } else return this.errorMsg
+                }
                 default: throw new Error()
             }
     
-            console.log()
-
         } catch(e) {
             return "Произошла ошибка записи, повторите попытку позже"
         }
-
-
     }
 
-
-    private isValidProducts(products:ProductsXLSXI[]): boolean {
-        let result = true
-        for (let i = 0; i < products.length; i++) {
-            if(
-                !products[i]["Заголовок"] ||
-                !products[i]["Описание"]  ||
-                !products[i]['Ссылка на изображение']  ||
-                !products[i]["Цена"]
-            ) {
-                result = false
-                break
+    private isValidData<T>(items: T[], requiredFields: (keyof T)[]): boolean {
+        for (let i = 0; i < items.length; i++) {
+            for (const field of requiredFields) {
+                if (!items[i][field]) {
+                    return false
+                }
             }
         }
-        
-        return result
+        return true
+    }
+    
+    private isValidWorks(works: WorksXLSXI[]): boolean {
+        return this.isValidData(works, ["Заголовок", "Описание", "Ссылка на изображение"]);
+    }
+    
+    private isValidService(services: ServicesXLSXI[]): boolean {
+        return this.isValidData(services, ["Заголовок", "Описание"]);
+    }
+    
+    private isValidProducts(products: ProductsXLSXI[]): boolean {
+        return this.isValidData(products, ["Заголовок", "Описание", "Ссылка на изображение", "Цена"]);
     }
 
-    async saveProducts(products: ProductsXLSXI[]) {
+    private isValidSocialMedia(products: SocialXLSXI[]): boolean {
+        return this.isValidData(products, ["Заголовок", "Ссылка на изображение", "Ссылка на социальную сеть"]);
+    }
 
+    async saveContent<T>(items: T[], type: TKeysXlsxContentMassUpdate) {
         await this.prisma.$transaction(async (prisma) => {
-
             const content = await prisma.content.findFirst()
-
-            await prisma.siteProducts.deleteMany({
-                where: {
-                    contentId: content.id
+    
+            if (type === 'works') {
+                await prisma.contentWork.deleteMany({
+                    where: {
+                        contentId: content.id
+                    }
+                });
+            } else if (type === 'services') {
+                await prisma.contentService.deleteMany({
+                    where: {
+                        contentId: content.id
+                    }
+                })
+            } else if (type === 'products') {
+                await prisma.siteProducts.deleteMany({
+                    where: {
+                        contentId: content.id
+                    }
+                })
+            } else if (type === 'socialMedia') {
+                await prisma.contentSocialMedia.deleteMany({
+                    where: {
+                        contentId: content.id
+                    }
+                })
+            }
+    
+            const createData = items.map(item => {
+                if (type === 'works') {
+                    return {
+                        title: item['Заголовок'],
+                        imgUrl: item["Ссылка на изображение"],
+                        description: item["Описание"]
+                    }
+                } else if (type === 'services') {
+                    return {
+                        title: item['Заголовок'],
+                        description: item["Описание"]
+                    }
+                } else if (type === 'products') {
+                    return {
+                        title: item['Заголовок'],
+                        imgUrl: item["Ссылка на изображение"],
+                        description: item["Описание"],
+                        price: item["Цена"]
+                    }
+                } else if (type === 'socialMedia') {
+                    return {
+                        title: item['Заголовок'],
+                        imgUrl: item["Ссылка на изображение"],
+                        linkToSM: item["Ссылка на социальную сеть"],
+                        price: item["Цена"]
+                    }
                 }
             })
-
+    
             await prisma.content.update({
                 data: {
-                    products: {
+                    [type]: {
                         createMany: {
-                            data: products.map(p => ({
-                                title: p['Заголовок'],
-                                imgUrl: p["Ссылка на изображение"],
-                                description: p["Описание"],
-                                price: p["Цена"]
-                            
-                            }))
+                            data: createData
                         }
                     }
                 },
@@ -88,11 +156,9 @@ class XlsxService {
                     id: content.id
                 }
             })
-
         })
-
     }
-
+    
 }
 
 export default new XlsxService()
