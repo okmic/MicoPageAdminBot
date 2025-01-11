@@ -1,6 +1,7 @@
 import xlsx from 'xlsx'
 import { ProductsXLSXI, ServicesXLSXI, SocialXLSXI, TKeysXlsxContentMassUpdate, WorksXLSXI } from './types'
 import { PrismaClient } from '@prisma/client'
+import { rm } from 'fs/promises'
 
 class XlsxService {
     
@@ -55,6 +56,12 @@ class XlsxService {
     
         } catch(e) {
             return "Произошла ошибка записи, повторите попытку позже"
+        } finally {
+            try {
+                await rm(filePath, {recursive: true})
+            } catch (e) {
+                console.error(e)
+            }
         }
     }
 

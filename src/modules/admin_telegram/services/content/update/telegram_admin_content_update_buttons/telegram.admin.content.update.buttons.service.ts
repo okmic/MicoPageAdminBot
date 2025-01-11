@@ -1,9 +1,8 @@
 import { PrismaClient } from "@prisma/client"
 import { MyContext } from "../../../../types"
-import { InputFile, NextFunction } from "grammy"
+import { NextFunction } from "grammy"
 import { ErrorTelegramStopExecution } from "../../../../../errors"
 import TelegramAdminContentUpdateMsgService from "../telegram.admin.content.update.msg.service"
-import { join } from "path"
 import TelegramAdminContentUpdateButtonsXlsxService from "./telegram.admin.content.update.buttons.xlsx.service"
 
 class TelegramAdminContentUpdateButtonsService {
@@ -22,7 +21,6 @@ class TelegramAdminContentUpdateButtonsService {
         try {
             const cbData = this.ctx.callbackQuery.data
             
-            console.log(cbData)
             if(/adminUpdateContentAgreement/.test(cbData)) {
                 const {key, uAnswer} = this.getParamsInString(cbData)
                 if(!key || !uAnswer) return

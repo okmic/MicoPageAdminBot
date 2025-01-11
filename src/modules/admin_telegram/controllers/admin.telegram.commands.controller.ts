@@ -1,6 +1,7 @@
 import { Bot } from "grammy"
 import { MyContext } from "../types"
 import { PrismaClient } from "@prisma/client"
+import telegramAdminContentService from "../services/content/telegram.admin.content.service"
 
 class AdminTelegramCommandsController {
 
@@ -13,8 +14,8 @@ class AdminTelegramCommandsController {
     }
 
     async handleCommands() {
-        this.bot.command('get_statistics', async (ctx) => await this.getStatisticsCommand(ctx))
         this.bot.command('start', async (ctx) => await this.startCommand(ctx as MyContext))
+        this.bot.command('get_content', async (ctx) => await telegramAdminContentService.getContentDetailsCommand(ctx))
     }
 
     private async startCommand(ctx: MyContext) {

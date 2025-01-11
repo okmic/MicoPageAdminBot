@@ -4,6 +4,7 @@ import ejs from "ejs"
 import path from "path"
 import fs from "fs"
 import { InlineKeyboard } from "grammy"
+import { getPathStoroge } from "../../../../helper"
 
 class TelegramAdminContentService {
     private prismaClient: PrismaClient
@@ -13,7 +14,7 @@ class TelegramAdminContentService {
     }
 
     private async renderTemplate(templateName: string, data: object): Promise<string> {
-        const templatePath = path.join(__dirname, "..", "..", "..", "..", 'temps', `${templateName}.ejs`)
+        const templatePath = getPathStoroge("systemTempsFiles") + `/${templateName}.ejs`
         const template = fs.readFileSync(templatePath, 'utf-8')
         return ejs.render(template, data)
     }
@@ -67,7 +68,7 @@ class TelegramAdminContentService {
         if (!content) {
             return ctx.answerCallbackQuery('Контент не найден.')
         }
-
+        
         const action = ctx.callbackQuery.data
 
         let message: string
@@ -88,11 +89,8 @@ class TelegramAdminContentService {
             case "products":
                 message = await this.renderTemplate('products', content)
                 break
-            default
-            :
-            return ctx.answerCallbackQuery('Неизвестное действие.')
+            default: return ctx.answerCallbackQuery('Неизвестное действие.')
     }
-
     await ctx.answerCallbackQuery() 
     await ctx.reply(message, { parse_mode: 'Markdown' })
 }
