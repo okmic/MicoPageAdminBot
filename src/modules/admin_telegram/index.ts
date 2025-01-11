@@ -1,10 +1,11 @@
-import { Bot, Context, session } from 'grammy'
+import { Bot, Context, InlineKeyboard, session } from 'grammy'
 import dotenv from 'dotenv'
-import {updateAdminContentMiddleWare} from './middleware/telegram.admin.update.content.middleware.service'
 import { SessionData } from './types'
 import { ErrorTelegramStopExecution } from '../errors'
 import AdminTelegramCommandsController from './controllers/admin.telegram.commands.controller'
 import AdminTelegramActionsController from './controllers/admin.telegram.actions.controller'
+import adminTelegramMenuService from './services/admin.telegram.menu.service'
+import adminTelegramMiddleware from "./middleware/telegram.admin.middleware.service"
 
 dotenv.config()
 
@@ -28,7 +29,9 @@ class AdminBot {
         initial: () => (initSession) 
       }))
   
-      this.bot.use(updateAdminContentMiddleWare)
+      
+      this.bot.use(adminTelegramMiddleware.updateAdminContentMiddleWare)
+      this.bot.use(adminTelegramMiddleware.menuMiddleWare)
       
       await new AdminTelegramCommandsController(this.bot).handleCommands()
       await new AdminTelegramActionsController(this.bot).handleActions()
