@@ -18,7 +18,7 @@ export function getPathStoroge(storageType?: "adminTelegramImages" | "PublicPath
     switch(storageType) {
         case "adminTelegramImages": return storPath + `/mico-page/img/telegram/admin`
         case "adminTelegramXlsx": return storPath + `/mico-page/appfiles`
-        case "PublicPathToTelegramImages": return process.env.MICO_PAGE_PUBLIC_URL + `/mico-page/img/telegram/admin`
+        case "PublicPathToTelegramImages": return process.env.MICO_PAGE_PUBLIC_URL + `/mico-page/telegram/admin/img`
         default: return storPath
     }
 }
