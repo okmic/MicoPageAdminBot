@@ -2,7 +2,6 @@ import { Bot } from "grammy";
 import { MyContext } from "../../types";
 import TelegramAdminContentUpdateButtonsService from "../content/update/telegram_admin_content_update_buttons/telegram.admin.content.update.buttons.service"
 import telegramAdminContentService from "../content/telegram.admin.content.service";
-import adminTelegramMenuService from "../admin.telegram.menu.service";
 
 export default class AdminTelegramButtonsActionService {
 

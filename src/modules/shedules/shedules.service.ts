@@ -1,6 +1,6 @@
 import schedule from "node-schedule"
-import { getPathStoroge } from "../../helper"
 import fs from "fs/promises"
+import { getPath } from "../../helper"
 
 export default class ShedulesService {
 
@@ -14,7 +14,7 @@ export default class ShedulesService {
     
     private async garbageСollectorAdminTelegramFiles() {
         
-        const path2stor = getPathStoroge("adminTelegramImages")
+        const path2stor = getPath("adminTelegramImages")
         
          schedule.scheduleJob(
                 '0 0 0 * * *', async () => {

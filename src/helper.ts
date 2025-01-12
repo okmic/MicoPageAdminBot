@@ -25,3 +25,4 @@ export function getPath(storageType?: TGetPath) {
         default: throw new Error("invalid key")
     }
 }
+

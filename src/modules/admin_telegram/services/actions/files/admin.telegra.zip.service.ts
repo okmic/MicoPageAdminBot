@@ -40,7 +40,7 @@ export default class AdminTelegramZipService {
         try {
           const zip = new AdmZip(zipFilePath)
           zip.extractAllTo(this.pathToUserSite, true)
-          await rm(zipFilePath) // Удаляем ZIP-файл после распаковки
+          await rm(zipFilePath)
           resolve()
         } catch (error) {
           reject(error)

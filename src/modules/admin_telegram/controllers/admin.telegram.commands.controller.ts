@@ -15,13 +15,14 @@ class AdminTelegramCommandsController {
 
     async handleCommands() {
         this.bot.command('start', async (ctx) => await this.startCommand(ctx as MyContext))
-        this.bot.command('get_content', async (ctx) => await telegramAdminContentService.getContentDetailsCommand(ctx))
+        this.bot.command('get-content', async (ctx) => await telegramAdminContentService.getContentDetailsCommand(ctx))
         this.bot.command('load-site', async (ctx) => await this.loadSiteCommand(ctx))
     }
+
     private async loadSiteCommand(ctx: MyContext) {
         ctx.session.oneTurnAction[ctx.from.id] = "loadSiteZip"
         return await ctx.reply('Пожалуйста, загрузите ZIP-файл.')
-      }
+    }
 
     private async startCommand(ctx: MyContext) {
         try {
