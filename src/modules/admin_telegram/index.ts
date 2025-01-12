@@ -20,6 +20,7 @@ class AdminBot {
   private async initialize() {
     try {
       const initSession: SessionData = {
+        storageUsersData: {},
         updateContent: {},
         waitngFromUpdateContent: {},
         oneTurnAction: {}

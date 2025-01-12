@@ -14,7 +14,7 @@ class AdminTelegramMiddleware {
 
             const prisma = new PrismaClient()
 
-            const user = await prisma.user.findUnique({
+            let user = await prisma.user.findUnique({
                 where: {
                     adminTgChatId: chatId.toString()
                 },
@@ -24,14 +24,17 @@ class AdminTelegramMiddleware {
                 }
             })
 
+            //если у юзера есть родитель то берем его чат id
+            if(user.parentUser) user.adminTgChatId = user.parentUser.adminTgChatId
+
             let isAuth = false
             if(user && user.TariffStatus !== "FREE") isAuth = true
 
-            if(!isAuth) {
-                return ctx.reply(`Доброго времени суток ${ctx.from.first_name}\n\nК сожалению, ваша подписка не активна. Для активации доступа к боту, пожалуйста, обратитесь к менеджеру продукта в Telegram: @MicoDevProd\n\n\nС уважением,\nКоманда поддержки MicoPage`)
-            } 
-            
-            else return await next()
+            if(!isAuth) return await ctx.reply(`Доброго времени суток ${ctx.from.first_name}\n\nК сожалению, ваша подписка не активна. Для активации доступа к боту, пожалуйста, обратитесь к менеджеру продукта в Telegram: @MicoDevProd\n\n\nС уважением,\nКоманда поддержки MicoPage`)
+            else {
+                if(!ctx.session.storageUsersData[ctx.from.id]) ctx.session.storageUsersData[ctx.from.id] = user
+                return await next()
+            }
 
         } catch (e) {
             return
