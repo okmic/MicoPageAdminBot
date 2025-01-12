@@ -6,7 +6,7 @@ import telegramAdminContentService from "../services/content/telegram.admin.cont
 class AdminTelegramCommandsController {
 
     private bot: Bot<MyContext>
-    private prisma
+    private prisma: PrismaClient
 
     constructor(bot) {
         this.bot = bot
@@ -24,7 +24,17 @@ class AdminTelegramCommandsController {
       }
 
     private async startCommand(ctx: MyContext) {
-        await ctx.reply('Добро пожаловать в админку MicoPage! Вот доступные команды:\n/start - Приветствие\n/get_content - Получить контент\n/add_service - Добавить услугу\n/edit_service - Редактировать услугу\n/delete_service - Удалить услугу\n/get_statistics - Получить статистику')
+        try {
+            const findeUsersWithId = await this.prisma.user.findUnique({where: {adminTgChatId: ctx.from.id.toString()}})
+            if(!findeUsersWithId) await this.prisma.user.create({
+                data: {
+                    adminTgChatId: ctx.from.id.toString()
+                }
+            })
+            return await ctx.reply('Добро пожаловать в MicoPage Bot!\n\n')
+        } catch (e) {
+            console.error(e)
+        }
     }
 
     private async getStatisticsCommand(ctx: MyContext) {

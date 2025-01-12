@@ -1,4 +1,4 @@
-import { Bot, Context, InlineKeyboard, session } from 'grammy'
+import { Bot, Context, session } from 'grammy'
 import dotenv from 'dotenv'
 import { SessionData } from './types'
 import { ErrorTelegramStopExecution } from '../errors'
@@ -29,7 +29,7 @@ class AdminBot {
         initial: () => (initSession) 
       }))
   
-      
+      this.bot.use(adminTelegramMiddleware.authMiddleWare)
       this.bot.use(adminTelegramMiddleware.updateAdminContentMiddleWare)
       this.bot.use(adminTelegramMiddleware.menuMiddleWare)
       

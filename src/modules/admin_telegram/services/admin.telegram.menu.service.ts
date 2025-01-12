@@ -1,6 +1,7 @@
 import { Keyboard } from 'grammy'
 import { ErrorTelegramStopExecution } from '../../errors'
 import { MyContext } from '../types'
+import telegramAdminContentService from './content/telegram.admin.content.service'
 
 class AdminTelegramMenuService {
 
@@ -22,13 +23,13 @@ class AdminTelegramMenuService {
                 await ctx.reply('Вы выбрали загрузку сайта. Пожалуйста, загрузите сайт как ZIP-файл.')
                 return new ErrorTelegramStopExecution()
             case '👁️ Посмотреть данные сайта':
-                await ctx.reply('Здесь вы можете просмотреть данные сайта.')
+                await telegramAdminContentService.getContentDetailsCommand(ctx)
                 return new ErrorTelegramStopExecution()
             case '🔄 Обновить данные':
-                await ctx.reply('Данные обновлены.')
-                return new ErrorTelegramStopExecution()
+                //обновляется за счет прослушки ключивых слов, в данном случе слово "Обновить"
+                return
             case '📝 О боте':
-                await ctx.reply('Этот бот предназначен для загрузки сайтов и управления ими.')
+                await ctx.reply('MicoPageBot TM')
                 return new ErrorTelegramStopExecution()
             default:
                 return
