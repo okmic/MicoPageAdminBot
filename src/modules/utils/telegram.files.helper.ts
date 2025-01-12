@@ -24,6 +24,8 @@ export async function downloadFile(tgFilePath: string, savePath: string, fileNam
     }
 
     await fs.writeFile(`${savePath}/${fileName}`, response.data)
+
+    return `${savePath}/${fileName}`
   } catch (e) {
     throw new Error(`Ошибка при загрузке файла: ${e}`)
   }

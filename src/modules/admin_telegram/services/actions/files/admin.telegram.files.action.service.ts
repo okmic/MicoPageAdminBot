@@ -1,9 +1,5 @@
 import { Bot } from "grammy"
 import { MyContext } from "../../../types"
-import fs from 'fs/promises'
-import { getPath, storageChecked } from "../../../../../helper"
-import { v4 } from "uuid"
-import xlsxService from "../../../../xlsx/xlsx.service"
 import { TKeysXlsxContentMassUpdate } from "../../../../xlsx/types"
 import AdminTelegramZipService from "./admin.telegra.zip.service"
 import AdminTelegramImgService from "./admin.telegra.img.service"
@@ -59,7 +55,7 @@ export default class AdminTelegramFilesActionService {
 
         try {
 
-            await new AdminTelegramZipService(ctx).downloadAndExtractZip(fileId, this.bot)
+            await new AdminTelegramZipService(ctx, this.bot).downloadAndExtractZip(fileId)
 
             return await ctx.reply('Сайт загружен!')
 
@@ -83,7 +79,6 @@ export default class AdminTelegramFilesActionService {
 
         return
     }
-
 
     isXlsx(mimeType: string): boolean {
         return (
