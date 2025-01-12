@@ -15,8 +15,9 @@ export default class AdminTelegramMessageActionService {
         try {
 
             this.bot.on("msg", async (ctx, next) => {
-                console.log(ctx.message.text)
+                await adminTelegramMenuService.handleMenuSelection(ctx)
                 await new TelegramAdminContentUpdateMsgService(ctx, next).handleMsgUpdates()
+
             })
 
         } catch (e) {

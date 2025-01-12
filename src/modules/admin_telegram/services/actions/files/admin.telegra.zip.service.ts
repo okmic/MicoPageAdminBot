@@ -1,11 +1,11 @@
-import { Zip } from 'adm-zip'
+import AdmZip from 'adm-zip'
 import fs from 'fs'
-import {rm} from 'fs/promises'
+import { rm } from 'fs/promises'
 import path from 'path'
 import { Bot } from 'grammy'
 import axios from 'axios'
-import { getPath, storageChecked } from '../../../helper'
-import { MyContext } from '../types'
+import { getPath, storageChecked } from '../../../../../helper'
+import { MyContext } from '../../../types'
 
 export default class AdminTelegramZipService {
   private ctx: MyContext
@@ -38,9 +38,9 @@ export default class AdminTelegramZipService {
       fileStream.on('finish', async () => {
         fileStream.close()
         try {
-          const zip = new Zip(zipFilePath)
+          const zip = new AdmZip(zipFilePath)
           zip.extractAllTo(this.pathToUserSite, true)
-          await rm(zipFilePath, {recursive: true})
+          await rm(zipFilePath) // Удаляем ZIP-файл после распаковки
           resolve()
         } catch (error) {
           reject(error)
@@ -52,4 +52,3 @@ export default class AdminTelegramZipService {
     })
   }
 }
-

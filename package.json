@@ -28,6 +28,7 @@
     "xlsx": "^0.18.5"
   },
   "devDependencies": {
+    "@types/adm-zip": "^0.5.7",
     "@types/dotenv": "^8.2.0",
     "@types/node": "^22.5.5",
     "@types/node-schedule": "^2.1.7",

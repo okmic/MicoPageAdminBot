@@ -2,7 +2,7 @@ import { Bot } from "grammy"
 import { MyContext } from "../types"
 import AdminTelegramMessageActionService from "../services/actions/admin.telegram.message.action.service"
 import AdminTelegramButtonsActionService from "../services/actions/admin.telegram.buttons.action.service"
-import AdminTelegramFilesActionService from "../services/actions/admin.telegram.files.action.service"
+import AdminTelegramFilesActionService from "../services/actions/files/admin.telegram.files.action.service"
 
 class AdminTelegramActionsController {
 

@@ -3,7 +3,7 @@ import { ErrorTelegramStopExecution } from '../../errors'
 import { MyContext } from '../types'
 
 class AdminTelegramMenuService {
-    
+
     createMainMenu() {
         return new Keyboard()
             .text('📤 Загрузить сайт')
@@ -16,11 +16,10 @@ class AdminTelegramMenuService {
 
     async handleMenuSelection(ctx: MyContext) {
         const msg = ctx.message.text
-        console.log(msg)
         switch (msg) {
             case '📤 Загрузить сайт':
+                ctx.session.oneTurnAction[ctx.from.id] = "loadSiteZip"
                 await ctx.reply('Вы выбрали загрузку сайта. Пожалуйста, загрузите сайт как ZIP-файл.')
-                ctx.session[ctx.from.id].loadSiteZip = true
                 return new ErrorTelegramStopExecution()
             case '👁️ Посмотреть данные сайта':
                 await ctx.reply('Здесь вы можете просмотреть данные сайта.')

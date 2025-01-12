@@ -19,7 +19,7 @@ class AdminTelegramCommandsController {
         this.bot.command('load-site', async (ctx) => await this.loadSiteCommand(ctx))
     }
     private async loadSiteCommand(ctx: MyContext) {
-        ctx.session.actions[ctx.from.id].loadSiteZip = true
+        ctx.session.oneTurnAction[ctx.from.id] = "loadSiteZip"
         return await ctx.reply('Пожалуйста, загрузите ZIP-файл.')
       }
 

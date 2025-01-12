@@ -22,7 +22,6 @@ class AdminTelegramMiddleware {
                     else savedKey = kuw.key
                 }
             }
-    
             if(savedKey) ctx.session.updateContent[ctx.from.id] = savedKey as KeyContentUpdate    
             else ctx.session.updateContent[ctx.from.id] = undefined
     
@@ -36,20 +35,22 @@ class AdminTelegramMiddleware {
         try {
             
             if (ctx.message && ctx.message.text) {
-                const msg = ctx.message.text.toLowerCase()
+                const msg = ctx.message.text.toLowerCase().trim()
+                
                 if(
-                    /\/help/.test(msg) ||
-                    /помощь/.test(msg) ||
-                    /help/.test(msg) ||
-                    /\/menu/.test(msg) ||
-                    /menu/.test(msg) ||
-                    /\/меню/.test(msg) ||
-                    /меню/.test(msg) ||
-                    /menu/.test(msg) 
-                )
-                return await ctx.reply('Вы можете выбрать опцию:', {
-                    reply_markup: adminTelegramMenuService.createMainMenu()
-                }) 
+                    "/help" === msg ||
+                    "help" === msg ||
+                    "помощь" === msg ||
+                    "/menu" === msg ||
+                    "menu" === msg ||
+                    "/меню" === msg ||
+                    "меню" === msg
+                ) {
+                    return await ctx.reply('Вы можете выбрать опцию:', {
+                        reply_markup: adminTelegramMenuService.createMainMenu()
+                    }) 
+                } else return await next()
+           
             } else return await next()
         } catch (e) {
             return

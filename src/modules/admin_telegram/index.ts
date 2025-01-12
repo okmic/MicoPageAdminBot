@@ -4,7 +4,6 @@ import { SessionData } from './types'
 import { ErrorTelegramStopExecution } from '../errors'
 import AdminTelegramCommandsController from './controllers/admin.telegram.commands.controller'
 import AdminTelegramActionsController from './controllers/admin.telegram.actions.controller'
-import adminTelegramMenuService from './services/admin.telegram.menu.service'
 import adminTelegramMiddleware from "./middleware/telegram.admin.middleware.service"
 
 dotenv.config()
@@ -23,7 +22,7 @@ class AdminBot {
       const initSession: SessionData = {
         updateContent: {},
         waitngFromUpdateContent: {},
-        actions: {}
+        oneTurnAction: {}
       }
   
       this.bot.use(session({
