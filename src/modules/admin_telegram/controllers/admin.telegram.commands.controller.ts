@@ -16,7 +16,12 @@ class AdminTelegramCommandsController {
     async handleCommands() {
         this.bot.command('start', async (ctx) => await this.startCommand(ctx as MyContext))
         this.bot.command('get_content', async (ctx) => await telegramAdminContentService.getContentDetailsCommand(ctx))
+        this.bot.command('load-site', async (ctx) => await this.loadSiteCommand(ctx))
     }
+    private async loadSiteCommand(ctx: MyContext) {
+        ctx.session.actions[ctx.from.id].loadSiteZip = true
+        return await ctx.reply('Пожалуйста, загрузите ZIP-файл.')
+      }
 
     private async startCommand(ctx: MyContext) {
         await ctx.reply('Добро пожаловать в админку MicoPage! Вот доступные команды:\n/start - Приветствие\n/get_content - Получить контент\n/add_service - Добавить услугу\n/edit_service - Редактировать услугу\n/delete_service - Удалить услугу\n/get_statistics - Получить статистику')

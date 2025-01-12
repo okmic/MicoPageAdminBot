@@ -2,10 +2,11 @@ import { Bot } from "grammy"
 import { KeyContentUpdate, MyContext } from "../../types"
 import fs from 'fs/promises'
 import fetch from 'node-fetch'
-import { getPathStoroge, storageChecked } from "../../../../helper"
+import { getPath, storageChecked } from "../../../../helper"
 import { v4 } from "uuid"
 import xlsxService from "../../../xlsx/xlsx.service"
 import { TKeysXlsxContentMassUpdate } from "../../../xlsx/types"
+import AdminTelegramZipService from "../admin.telegra.zip.service"
 
 export default class AdminTelegramFilesActionService {
 
@@ -31,23 +32,14 @@ export default class AdminTelegramFilesActionService {
                 try {
                     const document = ctx.message.document
 
-                    if (this.isImage(document.mime_type)) {
-                        
-                        const resultPath = await this.saveImage(ctx, document.mime_type)
+                    if (this.isImage(document.mime_type)) return await this.handleImgDocument(ctx, document)
 
-                        return await ctx.reply(resultPath)
+                    else if (this.isXlsx(document.mime_type)) return await this.handleXlsxDocument(ctx)
 
-                    } else if (this.isXlsx(document.mime_type)) {
+                    else if (ctx.session[ctx.from.id].loadSiteZip && document.mime_type === 'application/zip') return await this.handleZipDocument(ctx)
 
-                        const key = ctx.session.updateContent[ctx.from.id]
-                        if(!key || !["products", "services", "works", "socialMidea"].includes(key)) return
-                           
-                        await this.saveXlsx(ctx, key as TKeysXlsxContentMassUpdate)
-                        
-                        return
-                    } else {
-                        await ctx.reply('Неизвестный формат файла')
-                    }
+                    else return await ctx.reply('Неизвестное действие')
+
                 } catch (e) {
                     ctx.reply("Произошла ошибка при сохранении документа.")
                 }
@@ -56,6 +48,39 @@ export default class AdminTelegramFilesActionService {
         } catch (e) {
             console.error("Ошибка в обработке изображений:", e)
         }
+    }
+
+    private async handleZipDocument(ctx: MyContext) {
+        const fileId = ctx.message.document.file_id
+
+        await ctx.reply('Загружаю файл...')
+
+        try {
+
+            await new AdminTelegramZipService(ctx).downloadAndExtractZip(fileId, this.bot)
+
+            return await ctx.reply('Сайт загружен!')
+
+        } catch (e) {
+            console.error('Ошибка распаковки:', e)
+            await ctx.reply('Произошла ошибка при распаковке файла.')
+        } finally {
+            delete ctx.session[ctx.from.id].loadSiteZip
+        }
+    }
+
+    private async handleImgDocument(ctx: MyContext, document: Document & any) {
+        const resultPath = await this.saveImage(ctx, document.mime_type)
+        return await ctx.reply(resultPath)
+    }
+
+    private async handleXlsxDocument(ctx: MyContext) {
+        const key = ctx.session.updateContent[ctx.from.id]
+        if (!key || !["products", "services", "works", "socialMidea"].includes(key)) return
+
+        await this.saveXlsx(ctx, key as TKeysXlsxContentMassUpdate)
+
+        return
     }
 
     isXlsx(mimeType: string): boolean {
@@ -80,34 +105,34 @@ export default class AdminTelegramFilesActionService {
         }
 
         const fileName = `${v4()}_${this.formatDate(new Date("2024-05-01"))}.${extension}`
-        const savePath = getPathStoroge("adminTelegramImages") + `/${ctx.from.id}`
+        const savePath = getPath("adminTelegramImages") + `/${ctx.from.id}`
         //checked dir
         await storageChecked(savePath)
-        
+
         await this.downloadFile(file.file_path, savePath, fileName)
-        const resultPath = getPathStoroge("PublicPathToTelegramImages") + `/${ctx.from.id}/${fileName}`
+        const resultPath = getPath("PublicPathToTelegramImages") + `/${ctx.from.id}/${fileName}`
 
         return resultPath
     }
 
-    async saveXlsx(ctx: MyContext, key:TKeysXlsxContentMassUpdate) {
+    async saveXlsx(ctx: MyContext, key: TKeysXlsxContentMassUpdate) {
         try {
             const file = await ctx.getFile()
-            
+
             const fileName = `${v4()}_${this.formatDate(new Date("2024-05-01"))}.xlsx`
-            const savePath = getPathStoroge("adminTelegramXlsx") + `/${ctx.from.id}`
+            const savePath = getPath("adminTelegramXlsx") + `/${ctx.from.id}`
             await storageChecked(savePath)
-            
+
             await this.downloadFile(file.file_path, savePath, fileName)
-    
+
             const result = await xlsxService.readXlsx(savePath + `/${fileName}`, key)
-            
+
             return await ctx.reply(result)
         } catch (e) {
             console.error(e)
         }
     }
-    
+
     async downloadFile(tgFilePath: string, savePath: string, fileName: string) {
 
         const url = `https://api.telegram.org/file/bot${this.bot.token}/${tgFilePath}`
@@ -120,11 +145,11 @@ export default class AdminTelegramFilesActionService {
         await fs.writeFile(savePath + `/${fileName}`, buffer)
     }
 
-    private  formatDate(date: Date): string {
+    private formatDate(date: Date): string {
         const year = date.getFullYear()
         const month = String(date.getMonth() + 1).padStart(2, '0')
         const day = String(date.getDate()).padStart(2, '0')
-    
+
         return `${year}-${month}-${day}`
     }
 }

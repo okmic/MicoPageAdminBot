@@ -5,6 +5,12 @@ import { TKeysXlsxContentMassUpdate } from "../xlsx/types"
 
 export interface SessionData {
 
+  actions: {
+    [userId: string]: {
+      loadSiteZip?: true
+    }
+  }
+
   updateContent: {
     [userId: string]: KeyContentUpdate
   }

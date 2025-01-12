@@ -1,11 +1,11 @@
 import dotenv from 'dotenv'
 import AdminBot from "./modules/admin_telegram"
-import { getPathStoroge, storageChecked } from './helper'
+import { getPath, storageChecked } from './helper'
 dotenv.config()
 
 try {
     
-    const path2stor = getPathStoroge()
+    const path2stor = getPath("storage")
     storageChecked(path2stor)
     storageChecked(path2stor + "/mico-page")
     storageChecked(path2stor + "/mico-page/appfiles")

@@ -22,7 +22,8 @@ class AdminBot {
     try {
       const initSession: SessionData = {
         updateContent: {},
-        waitngFromUpdateContent: {}
+        waitngFromUpdateContent: {},
+        actions: {}
       }
   
       this.bot.use(session({

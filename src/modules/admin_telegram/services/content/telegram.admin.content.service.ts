@@ -1,10 +1,9 @@
 import { PrismaClient } from "@prisma/client"
 import { Context } from "grammy"
 import ejs from "ejs"
-import path from "path"
 import fs from "fs"
 import { InlineKeyboard } from "grammy"
-import { getPathStoroge } from "../../../../helper"
+import { getPath } from "../../../../helper"
 
 class TelegramAdminContentService {
     private prismaClient: PrismaClient
@@ -14,7 +13,7 @@ class TelegramAdminContentService {
     }
 
     private async renderTemplate(templateName: string, data: object): Promise<string> {
-        const templatePath = getPathStoroge("systemTempsFiles") + `/${templateName}.ejs`
+        const templatePath = getPath("systemTempsFiles") + `/${templateName}.ejs`
         const template = fs.readFileSync(templatePath, 'utf-8')
         return ejs.render(template, data)
     }
