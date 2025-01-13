@@ -4,7 +4,7 @@ import { getPath, storageChecked } from '../../../../../helper'
 import { MyContext } from '../../../types'
 import { v4 } from 'uuid'
 import { getUserData } from '../../../../utils/user.helper'
-import { downloadFile, formatDate } from '../../../../utils/telegram.files.helper'
+import { downloadFile, formatDate } from '../../../utils/telegram.files.helper'
 
 export default class AdminTelegramImgService {
 

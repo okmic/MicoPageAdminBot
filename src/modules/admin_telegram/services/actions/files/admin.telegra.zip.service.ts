@@ -5,7 +5,7 @@ import { Bot } from 'grammy'
 import { getPath, storageChecked } from '../../../../../helper'
 import { MyContext } from '../../../types'
 import { getUserData } from '../../../../utils/user.helper'
-import { downloadFile } from '../../../../utils/telegram.files.helper'
+import { downloadFile } from '../../../utils/telegram.files.helper'
 
 export default class AdminTelegramZipService {
   private ctx: MyContext

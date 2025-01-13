@@ -6,7 +6,7 @@ import { v4 } from 'uuid'
 import { TKeysXlsxContentMassUpdate } from '../../../../xlsx/types'
 import xlsxService from '../../../../xlsx/xlsx.service'
 import { getUserData } from '../../../../utils/user.helper'
-import { downloadFile, formatDate } from '../../../../utils/telegram.files.helper'
+import { downloadFile, formatDate } from '../../../utils/telegram.files.helper'
 
 export default class AdminTelegramXlsxService {
   private ctx: MyContext
