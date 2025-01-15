@@ -4,13 +4,11 @@ import ejs from "ejs"
 import fs from "fs"
 import { InlineKeyboard } from "grammy"
 import { getPath } from "../../../../helper"
+import { getSiteContent } from "../../utils/telegram.content.helper"
+import { MyContext } from "../../types"
 
 class TelegramAdminContentService {
-    private prismaClient: PrismaClient
 
-    constructor() {
-        this.prismaClient = new PrismaClient()
-    }
 
     private async renderTemplate(templateName: string, data: object): Promise<string> {
         const templatePath = getPath("systemTempsFiles") + `/${templateName}.ejs`
@@ -18,52 +16,29 @@ class TelegramAdminContentService {
         return ejs.render(template, data)
     }
 
-    async getContentDetailsCommand(ctx: Context) {
-        const content = await this.prismaClient.content.findFirst({
-            include: {
-                services: {
-                    include: {
-                        items: true
-                    }
-                },
-                works: true,
-                socialMedia: true,
-                products: true
-            }
-        })
-
-        if (!content) {
-            return ctx.reply('Контент не найден.')
+    async getContentDetailsCommand(ctx: MyContext) {
+        try {    
+            const keyboard = new InlineKeyboard()
+                .text("Основная информация", "mainInfo")
+                .row()
+                .text("Работы", "works")
+                .row()
+                .text("Услуги", "services")
+                .row()
+                .text("Социальные медиа", "socialMedia")
+                .row()
+                .text("Продукты", "products")
+    
+            await ctx.reply("Выберите раздел для получения информации:", { reply_markup: keyboard })
+        } catch (e) {
+            console.error(e)
         }
-
-        const keyboard = new InlineKeyboard()
-            .text("Основная информация", "mainInfo")
-            .row()
-            .text("Работы", "works")
-            .row()
-            .text("Услуги", "services")
-            .row()
-            .text("Социальные медиа", "socialMedia")
-            .row()
-            .text("Продукты", "products")
-
-        await ctx.reply("Выберите раздел для получения информации:", { reply_markup: keyboard })
     }
 
-    async handleCallbackQuery(ctx: Context) {
-        const content = await this.prismaClient.content.findFirst({
-            include: {
-                services: {
-                    include: {
-                        items: true
-                    }
-                },
-                works: true,
-                socialMedia: true,
-                products: true
-            }
-        })
+    async handleCallbackQuery(ctx: MyContext) {
 
+        const content = await getSiteContent(ctx.session.storageUsersData[ctx.from.id])
+       
         if (!content) {
             return ctx.answerCallbackQuery('Контент не найден.')
         }

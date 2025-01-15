@@ -23,7 +23,7 @@ export default class AdminTelegramXlsxService {
   async saveXlsx() {
     try {
       const user = await getUserData(this.ctx)
-      const storagePath = getPath("storage")
+      const storagePath = getPath("adminTelegramXlsx")
       storageChecked(path.join(storagePath, user.adminTgChatId))
       storageChecked(path.join(storagePath, user.adminTgChatId, 'xlsx'))
       const pathToUserStoreXlsx = path.join(storagePath, user.adminTgChatId, 'xslx')
@@ -36,6 +36,7 @@ export default class AdminTelegramXlsxService {
 
       const result = await xlsxService.readXlsx(pathToUserStoreXlsx + `/${fileName}`, this.key)
 
+      проблема с xlsx
       return await this.ctx.reply(result)
     } catch (e) {
       console.error(e)

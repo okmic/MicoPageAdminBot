@@ -7,12 +7,10 @@ import TelegramAdminContentUpdateButtonsXlsxService from "./telegram.admin.conte
 
 class TelegramAdminContentUpdateButtonsService {
 
-    private prismaClient: PrismaClient
     private ctx: MyContext
     private next: NextFunction
 
     constructor(ctx: MyContext, next: NextFunction) {
-        this.prismaClient = new PrismaClient()
         this.ctx = ctx
         this.next = next
     }

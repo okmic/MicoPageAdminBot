@@ -7,10 +7,10 @@ class AdminTelegramMenuService {
 
     createMainMenu() {
         return new Keyboard()
-            .text('📤 Загрузить сайт')
             .text('👁️ Посмотреть данные сайта')
-            .row()
             .text('🔄 Обновить данные')
+            .row()
+            .text('📤 Загрузить сайт')
             .text('📝 О боте')
             .resized()
     }

@@ -1,6 +1,6 @@
-import { KeyContentUpdateWord } from "./types";
+import { KeyContentUpdateWord } from "../types";
 
-class TelegramAdminHelper {
+class TelegramExecuteWordsHelper {
 
     keysUpdateWords: KeyContentUpdateWord[] = [
         { "word": "обновить", "key": "someUpdate" },
@@ -76,4 +76,4 @@ class TelegramAdminHelper {
     
 }
 
-export default new TelegramAdminHelper()
+export default new TelegramExecuteWordsHelper()

@@ -1,8 +1,8 @@
 import { NextFunction } from "grammy"
 import { KeyContentUpdate, KeyContentUpdateWord, MyContext } from "../types"
-import TelegramAdminHelper from "../helper"
 import adminTelegramMenuService from "../services/admin.telegram.menu.service"
 import { PrismaClient } from "@prisma/client"
+import telegramExecuteWordsHelper from "../utils/telegram.execute.words.helper"
 
 class AdminTelegramMiddleware {
 
@@ -43,7 +43,7 @@ class AdminTelegramMiddleware {
 
     async updateAdminContentMiddleWare(ctx: MyContext, next: NextFunction) {
         try {
-            const keysUpdateWords: KeyContentUpdateWord[] = TelegramAdminHelper.keysUpdateWords
+            const keysUpdateWords: KeyContentUpdateWord[] = telegramExecuteWordsHelper.keysUpdateWords
     
             if (!ctx.message || !ctx.message.text) return await next()
     

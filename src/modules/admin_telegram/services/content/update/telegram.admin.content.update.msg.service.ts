@@ -3,6 +3,7 @@ import { AdminContentUpdateMethodNames, KeyContentUpdate, MyContext } from "../.
 import { InlineKeyboard, NextFunction } from "grammy"
 import adminTelegramResponseText from "../../admin.telegram.response.text.service"
 import { TKeysXlsxContentMassUpdate } from "../../../../xlsx/types"
+import { getSiteContent } from "../../../utils/telegram.content.helper"
 
 class TelegramAdminContentUpdateMsgService {
 
@@ -75,18 +76,19 @@ class TelegramAdminContentUpdateMsgService {
 
         const keyboard = new InlineKeyboard()
             .text("Название сайта", "updateContent key=logoName")
+            .row()
             .text("Описание компании", "updateContent key=companyDescription")
             .row()
-            .text("Название сайта", "updateContent key=logoName")
             .text("Лого Изображение", "updateContent key=logoImgUrl")
+            .row()
+            .text("Адресс", "updateContent key=address")
             .row()
             .text("Почту", "updateContent key=email")
             .text("Номер телефона", "updateContent key=phone")
             .row()
-            .text("Адресс", "updateContent key=address")
             .text("Главная заголовок", "updateContent key=mainBlockTitle")
-            .row()
             .text("Главное описание", "updateContent key=mainBlockDescription")
+            .row()
             .text("Изображение главного блока", "updateContent key=mainBlockImgUrl")
             .row()
             .text("Блок о работе", "updateContent key=works")
@@ -245,7 +247,7 @@ class TelegramAdminContentUpdateMsgService {
         if (session.email && session.email.startAgreement && !session.email.value) {
             const email = this.validateEmail(this.ctx.message.text)
             if (!email) return await this.ctx.reply(adminTelegramResponseText.msgErrorValidEmail)
-
+            
             await this.updateContent(session.key, email)
             await this.ctx.reply(this.successMsg)
             return
@@ -266,13 +268,14 @@ class TelegramAdminContentUpdateMsgService {
     }
 
     private async updateContent(key: string, value: string) {
-        const content = await this.prisma.content.findFirst()
+        const userContent = await getSiteContent(this.ctx.session.storageUsersData[this.ctx.from.id])
+
         await this.prisma.content.update({
             data: {
                 [key]: value,
             },
             where: {
-                id: content.id,
+                id: userContent.id,
             },
         })
 

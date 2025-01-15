@@ -10,11 +10,18 @@ export async function getSiteContent(user: User | undefined) {
         id: user.id,
       }, 
       include: {
-        content: true
+        content: {
+          include: {
+            products: true,
+            services: true,
+            socialMedia: true,
+            works: true
+          }
+        }
       }
     })
 
-    return content.content
+    return content.content[0]
   } catch (e) {
     throw e
   }
