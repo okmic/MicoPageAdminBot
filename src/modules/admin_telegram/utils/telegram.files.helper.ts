@@ -12,7 +12,7 @@ export function formatDate(date: Date): string {
 
 export async function downloadFile(tgFilePath: string, savePath: string, fileName: string, botToken: string) {
   
-  const url = `https://api.telegram.org/file/bot${botToken}/${tgFilePath}`;
+  const url = `https://api.telegram.org/file/bot${botToken}/${tgFilePath}`
 
   try {
     const response = await axios.get(url, {
@@ -22,7 +22,6 @@ export async function downloadFile(tgFilePath: string, savePath: string, fileNam
     if (response.status !== 200) {
       throw new Error(`Ошибка при загрузке файла: ${response.statusText}`)
     }
-
     await fs.writeFile(`${savePath}/${fileName}`, response.data)
 
     return `${savePath}/${fileName}`

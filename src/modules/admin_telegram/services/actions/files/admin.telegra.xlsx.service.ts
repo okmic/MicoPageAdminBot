@@ -26,17 +26,16 @@ export default class AdminTelegramXlsxService {
       const storagePath = getPath("adminTelegramXlsx")
       storageChecked(path.join(storagePath, user.adminTgChatId))
       storageChecked(path.join(storagePath, user.adminTgChatId, 'xlsx'))
-      const pathToUserStoreXlsx = path.join(storagePath, user.adminTgChatId, 'xslx')
+      const pathToUserStoreXlsx = path.join(storagePath, user.adminTgChatId, 'xlsx')
 
       const file = await this.ctx.getFile()
 
-      const fileName = `${v4()}_${formatDate(new Date("2024-05-01"))}.xlsx`
+      const fileName = `${v4()}_${formatDate(new Date())}.xlsx`
 
-      await downloadFile(file.file_path, pathToUserStoreXlsx, fileName, this.bot.token)
+      const resultPath = await downloadFile(file.file_path, pathToUserStoreXlsx, fileName, this.bot.token)
 
-      const result = await xlsxService.readXlsx(pathToUserStoreXlsx + `/${fileName}`, this.key)
-
-      проблема с xlsx
+      const result = await xlsxService.readXlsx(resultPath, this.key)
+      this.ctx.session.waitngFromUpdateContent[this.ctx.from.id] = undefined
       return await this.ctx.reply(result)
     } catch (e) {
       console.error(e)

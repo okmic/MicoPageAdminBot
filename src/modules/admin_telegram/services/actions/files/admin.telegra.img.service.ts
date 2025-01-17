@@ -19,6 +19,7 @@ export default class AdminTelegramImgService {
   }
 
   async saveImage() {
+    
     const user = await getUserData(this.ctx)
     const storagePath = getPath("storage")
     storageChecked(path.join(storagePath, user.adminTgChatId))
@@ -34,7 +35,7 @@ export default class AdminTelegramImgService {
       if (parts.length > 1) this.extension = parts.pop()
     }
 
-    const fileName = `${v4()}_${formatDate(new Date("2024-05-01"))}.${this.extension}`
+    const fileName = `${v4()}_${formatDate(new Date())}.${this.extension}`
 
     await downloadFile(file.file_path, pathToUserStoreImg, fileName, this.bot.token)
     const resultPath = getPath("PublicPathToTelegramImages") + `/${this.ctx.from.id}/${fileName}`
