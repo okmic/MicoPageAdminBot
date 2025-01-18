@@ -1,6 +1,8 @@
 import dotenv from 'dotenv'
 import AdminBot from "./modules/admin_telegram"
 import { getPath, storageChecked } from './helper'
+import { FTPService } from './modules/ftp/ftp.service'
+import { PrismaClient } from '@prisma/client'
 dotenv.config()
 
 try {

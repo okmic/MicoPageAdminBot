@@ -1,5 +1,4 @@
 import AdmZip from 'adm-zip'
-import fs from 'fs/promises'
 import path from 'path'
 import { Bot } from 'grammy'
 import { getPath, storageChecked } from '../../../../../helper'

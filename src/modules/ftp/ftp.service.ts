@@ -1,5 +1,5 @@
 import { FtpServer } from '@prisma/client'
-import { Client } from 'basic-ftp'
+import {Client} from 'basic-ftp'
 import fs from 'fs/promises'
 import * as path from 'path'
 
@@ -10,28 +10,42 @@ export class FTPService {
     private ftpServer: FtpServer
 
     constructor(itemsToUpload: string[], remoteBasePath: string, ftpServer: FtpServer) {
-        this.client = new Client()
+
+        this.client = new Client(6900)
         this.itemsToUpload = itemsToUpload
         this.remoteBasePath = remoteBasePath
         this.ftpServer = ftpServer
+
+        this.client.ftp.verbose = true 
     }
 
-    async connect() {
-        await this.client.access({
-            host: this.ftpServer.ftpHost,
-            user: this.ftpServer.ftpUser ,
-            password: this.ftpServer.ftpPassword,
-            secure: this.ftpServer.isSecureFtp
-        })
-        console.log('Connected to FTP server')
+    async start() {
+        try {
+            await this.client.access({
+                host: this.ftpServer.ftpHost,
+                user: this.ftpServer.ftpUser,
+                password: this.ftpServer.ftpPassword,
+                secure: this.ftpServer.isSecureFtp
+            })
+            
+            await this.uploadItems()
+
+            return "Обновил!"
+        } catch (e) {
+            return "Произошла ошибка загрузки, проверьте свой ftp сервер и настройки доступа к нему, хост, логин, пароль и попробуйте снова!"
+        } finally {
+            this.close()
+        }
+    
+        //need to close conn
     }
 
-    async uploadFile(localFilePath: string, remoteFilePath: string) {
+    private async uploadFile(localFilePath: string, remoteFilePath: string) {
         await this.client.uploadFrom(localFilePath, remoteFilePath)
         console.log(`Uploaded ${localFilePath} to ${remoteFilePath}`)
     }
 
-    async uploadDirectory(localDirPath: string, remoteDirPath: string) {
+    private async uploadDirectory(localDirPath: string, remoteDirPath: string) {
         await this.client.ensureDir(remoteDirPath)
         const files = await fs.readdir(localDirPath)
 
@@ -49,7 +63,7 @@ export class FTPService {
         }
     }
 
-    async uploadItems() {
+    private async uploadItems() {
         for (const item of this.itemsToUpload) {
             const localPath = path.resolve(item)
             const remotePath = path.join(this.remoteBasePath, path.basename(item))
@@ -64,8 +78,8 @@ export class FTPService {
         }
     }
 
-    async close() {
-        await this.client.close()
+    private close() {
+        this.client.close()
         console.log('Connection closed')
     }
 }
