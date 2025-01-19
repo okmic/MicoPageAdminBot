@@ -46,10 +46,9 @@ class AdminTelegramMiddleware {
         try {
             if (!ctx.message || !ctx.message.text) return await next()
             const excWords = getAllWordExceptions() 
-        
+
             if(excWords.includes(ctx.message.text)) return await next()
             const keysUpdateWords: KeyContentUpdateWord[] = telegramExecuteWordsHelper.keysUpdateWords
-    
     
             const text = ctx.message.text.toLocaleLowerCase()
             
