@@ -3,7 +3,7 @@ import { KeyContentUpdate, KeyContentUpdateWord, MyContext } from "../types"
 import adminTelegramMenuService from "../services/admin.telegram.menu.service"
 import { PrismaClient } from "@prisma/client"
 import telegramExecuteWordsHelper from "../utils/telegram.execute.words.helper"
-import { getAllWordExceptions } from "../controllers/telegram.messages.controller"
+import { getAllWordExceptions } from "../controllers/admin.telegram.messages.controller"
 
 class AdminTelegramMiddleware {
 

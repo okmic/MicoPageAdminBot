@@ -2,7 +2,7 @@ import { Keyboard } from "grammy"
 import { ErrorTelegramStopExecution } from "../../errors"
 import { MyContext } from "../types"
 import telegramAdminContentService from "./content/telegram.admin.content.service"
-import { telegramMenuMsgs } from "../controllers/telegram.messages.controller"
+import { telegramMenuMsgs } from "../controllers/admin.telegram.messages.controller"
 
 class AdminTelegramMenuService {
 
