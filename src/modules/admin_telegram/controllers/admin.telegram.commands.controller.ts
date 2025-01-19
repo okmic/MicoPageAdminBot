@@ -2,6 +2,7 @@ import { Bot } from "grammy"
 import { MyContext } from "../types"
 import { PrismaClient } from "@prisma/client"
 import telegramAdminContentService from "../services/content/telegram.admin.content.service"
+import adminTelegramStorageController from "./admin.telegram.storage.controller"
 
 class AdminTelegramCommandsController {
 
@@ -20,7 +21,12 @@ class AdminTelegramCommandsController {
     }
 
     private async loadSiteCommand(ctx: MyContext) {
-        ctx.session.oneTurnAction[ctx.from.id] = "loadSiteZip"
+        adminTelegramStorageController.userTelegramClearStorage(ctx)
+        
+        ctx.session.userAction[ctx.from.id] = {
+            key: "loadSiteZip"
+        }
+        
         return await ctx.reply('Пожалуйста, загрузите ZIP-файл.')
     }
 

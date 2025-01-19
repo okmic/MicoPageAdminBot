@@ -23,7 +23,7 @@ class AdminBot {
         storageUsersData: {},
         updateContent: {},
         waitngFromUpdateContent: {},
-        oneTurnAction: {}
+        userAction: {}
       }
   
       this.bot.use(session({

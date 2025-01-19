@@ -4,6 +4,7 @@ import { TKeysXlsxContentMassUpdate } from "../../../../xlsx/types"
 import AdminTelegramZipService from "./admin.telegra.zip.service"
 import AdminTelegramImgService from "./admin.telegra.img.service"
 import AdminTelegramXlsxService from "./admin.telegra.xlsx.service"
+import adminTelegramStorageController from "../../../controllers/admin.telegram.storage.controller"
 
 export default class AdminTelegramFilesActionService {
 
@@ -33,7 +34,7 @@ export default class AdminTelegramFilesActionService {
 
                     else if (this.isXlsx(document.mime_type)) return await this.handleXlsxDocument(ctx)
 
-                    else if (ctx.session.oneTurnAction[ctx.from.id] && ctx.session.oneTurnAction[ctx.from.id] === "loadSiteZip" && document.mime_type === 'application/zip') return await this.handleZipDocument(ctx)
+                    else if (ctx.session.userAction[ctx.from.id] && ctx.session.userAction[ctx.from.id].key === "loadSiteZip" && document.mime_type === 'application/zip') return await this.handleZipDocument(ctx)
 
                     else return await ctx.reply('Неизвестное действие')
 
@@ -62,7 +63,7 @@ export default class AdminTelegramFilesActionService {
         } catch (e) {
             await ctx.reply('Произошла ошибка при распаковке файла.')
         } finally {
-            delete ctx.session.oneTurnAction[ctx.from.id]
+            adminTelegramStorageController.userTelegramClearStorage(ctx)
         }
     }
 

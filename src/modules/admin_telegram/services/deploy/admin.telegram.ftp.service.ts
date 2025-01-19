@@ -1,7 +1,7 @@
 import { Bot } from "grammy"
 import { MyContext } from "../../types"
 
-class AdminTelegramFtpService {
+export default class AdminTelegramFtpService {
 
     bot: Bot
     ctx: MyContext
@@ -12,6 +12,7 @@ class AdminTelegramFtpService {
     }
 
     async handleAddFtpUser() {
+        
     }
 
 }

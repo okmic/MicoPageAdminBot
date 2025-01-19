@@ -11,8 +11,11 @@ export interface SessionData {
     [userId: string]: User
   }
 
-  oneTurnAction: {
-    [userId: string]: TAdminTelegramOneTurnActions
+  userAction: {
+    [userId: string]: {
+      key: TAdminTelegramOneTurnActions,
+      resultValue?: any
+    }
   }
 
   updateContent: {

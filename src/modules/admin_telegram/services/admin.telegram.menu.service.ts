@@ -3,6 +3,7 @@ import { ErrorTelegramStopExecution } from "../../errors"
 import { MyContext } from "../types"
 import telegramAdminContentService from "./content/telegram.admin.content.service"
 import { telegramMenuMsgs } from "../controllers/admin.telegram.messages.controller"
+import adminTelegramStorageController from "../controllers/admin.telegram.storage.controller"
 
 class AdminTelegramMenuService {
 
@@ -43,7 +44,8 @@ class AdminTelegramMenuService {
                 return new ErrorTelegramStopExecution()
 
             case telegramMenuMsgs.downloadSite:
-                ctx.session.oneTurnAction[ctx.from.id] = "loadSiteZip"
+                adminTelegramStorageController.userTelegramClearStorage(ctx)
+                ctx.session.userAction[ctx.from.id] = {key: "loadSiteZip"}
                 await ctx.reply("Вы выбрали загрузку сайта. Пожалуйста, загрузите сайт как ZIP-файл.")
                 return new ErrorTelegramStopExecution()
             case telegramMenuMsgs.deployToFtp: {
