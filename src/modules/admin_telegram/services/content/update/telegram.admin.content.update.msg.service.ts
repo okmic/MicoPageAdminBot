@@ -16,7 +16,7 @@ class TelegramAdminContentUpdateMsgService {
         this.prisma = new PrismaClient()
         this.ctx = ctx
         this.next = next
-        this.successMsg = "Записал и обновил на сайте!"
+        this.successMsg = "Обновил!"
     }
 
     async handleMsgUpdates() {

@@ -3,6 +3,7 @@ import { KeyContentUpdate, KeyContentUpdateWord, MyContext } from "../types"
 import adminTelegramMenuService from "../services/admin.telegram.menu.service"
 import { PrismaClient } from "@prisma/client"
 import telegramExecuteWordsHelper from "../utils/telegram.execute.words.helper"
+import { getAllWordExceptions } from "../controllers/telegram.messages.controller"
 
 class AdminTelegramMiddleware {
 
@@ -43,9 +44,12 @@ class AdminTelegramMiddleware {
 
     async updateAdminContentMiddleWare(ctx: MyContext, next: NextFunction) {
         try {
+            if (!ctx.message || !ctx.message.text) return await next()
+            const excWords = getAllWordExceptions() 
+        
+            if(excWords.includes(ctx.message.text)) return await next()
             const keysUpdateWords: KeyContentUpdateWord[] = telegramExecuteWordsHelper.keysUpdateWords
     
-            if (!ctx.message || !ctx.message.text) return await next()
     
             const text = ctx.message.text.toLocaleLowerCase()
             
