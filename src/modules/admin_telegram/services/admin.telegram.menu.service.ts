@@ -1,9 +1,10 @@
-import { Keyboard } from "grammy"
+import { Bot, Keyboard } from "grammy"
 import { ErrorTelegramStopExecution } from "../../errors"
 import { MyContext } from "../types"
 import telegramAdminContentService from "./content/telegram.admin.content.service"
 import { telegramMenuMsgs } from "../controllers/admin.telegram.messages.controller"
 import adminTelegramStorageController from "../controllers/admin.telegram.storage.controller"
+import AdminTelegramFtpService from "./deploy/admin.telegram.ftp.service"
 
 class AdminTelegramMenuService {
 
@@ -28,7 +29,7 @@ class AdminTelegramMenuService {
             .resized()
     }
 
-    async handleMenuSelection(ctx: MyContext) {
+    async handleMenuSelection(ctx: MyContext, bot: Bot) {
         const msg = ctx.message.text
         switch (msg) {
             case telegramMenuMsgs.getData:
@@ -52,7 +53,7 @@ class AdminTelegramMenuService {
                 return await ctx.reply(ctx.msg.text)
             }
             case telegramMenuMsgs.addFtpUser: {
-                return await ctx.reply(ctx.msg.text)
+                return await AdminTelegramFtpService.handleAddFtpUser(ctx, bot)
             }
             default:
                 return

@@ -72,7 +72,6 @@ class AdminTelegramMiddleware {
 
     async menuMiddleWare(ctx: MyContext, next: NextFunction) {
         try {
-            
             if (ctx.message && ctx.message.text) {
                 const msg = ctx.message.text.toLowerCase().trim()
                 
@@ -85,9 +84,11 @@ class AdminTelegramMiddleware {
                     "/меню" === msg ||
                     "меню" === msg
                 ) {
-                    return await ctx.reply('Вы можете выбрать опцию:', {
+                    return await ctx.reply(
+                        'Вы можете выбрать опцию:', {
                         reply_markup: adminTelegramMenuService.createMainMenu()
-                    }) 
+                        }
+                    ) 
                 } else return await next()
            
             } else return await next()
@@ -95,6 +96,19 @@ class AdminTelegramMiddleware {
             return
         }
     }
+
+/*     
+    async actionMiddleWare(ctx: MyContext, next: NextFunction) {
+        try {
+            if(ctx.session.userAction[ctx.from.id]) return
+            const action = ctx.session.userAction[ctx.from.id].key
+
+            switch(action) {}
+        } catch(e) {
+            return
+        }
+    } 
+*/
 
 }
 
