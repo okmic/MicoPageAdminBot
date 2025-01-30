@@ -1,4 +1,3 @@
-import AdminTelegramZipService from "../services/actions/files/admin.telegra.zip.service"
 import { MyContext } from "../types"
 
 class AdminTelegramStorageController {

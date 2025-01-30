@@ -1,10 +1,11 @@
-import { Bot, Keyboard } from "grammy"
+import { Bot, Keyboard, InlineKeyboard } from "grammy"
 import { ErrorTelegramStopExecution } from "../../errors"
 import { MyContext } from "../types"
 import telegramAdminContentService from "./content/telegram.admin.content.service"
-import { telegramMenuMsgs } from "../controllers/admin.telegram.messages.controller"
+import { telegramMenuMsgs, universalMsgs } from "../controllers/admin.telegram.messages.controller"
 import adminTelegramStorageController from "../controllers/admin.telegram.storage.controller"
 import AdminTelegramFtpService from "./deploy/admin.telegram.ftp.service"
+import { PrismaClient } from "@prisma/client"
 
 class AdminTelegramMenuService {
 
@@ -49,14 +50,29 @@ class AdminTelegramMenuService {
                 ctx.session.userAction[ctx.from.id] = {key: "loadSiteZip"}
                 await ctx.reply("Вы выбрали загрузку сайта. Пожалуйста, загрузите сайт как ZIP-файл.")
                 return new ErrorTelegramStopExecution()
+                
             case telegramMenuMsgs.deployToFtp: {
-                return await ctx.reply(ctx.msg.text)
+
+                ctx.session.userAction[ctx.from.id] = {key: "deployToSite"}
+                const prisma = new PrismaClient()
+                const user = ctx.session.storageUsersData[ctx.from.id]
+                if(!user) return await ctx.reply(universalMsgs.defaultErrorMsg)
+                const contents = await prisma.content.findMany({
+                    where: {
+                        userId: user.id
+                    }
+                })
+                if(contents.length === 0) return await ctx.reply("У вас нет активных сайтов.")
+
+                const buttons = new InlineKeyboard()
+                contents.map(c => buttons.text(c.logoName, `deployContentId ${c.id}`))
+
+                await ctx.reply(`Выберите сайт из списка: 👇`, {reply_markup: buttons})
+
+                return 
             }
-            case telegramMenuMsgs.addFtpUser: {
-                return await AdminTelegramFtpService.handleAddFtpUser(ctx, bot)
-            }
-            default:
-                return
+            case telegramMenuMsgs.addFtpUser: return await AdminTelegramFtpService.handleAddFtpUser(ctx, bot)
+            default: return
         }
     }
 }

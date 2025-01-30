@@ -10,6 +10,10 @@ export const telegramMenuMsgs = {
 }
 
 
+export const universalMsgs = {
+    defaultErrorMsg: "Произошла ошибка, попробуйте позже или напишите администратору",
+}
+
 export const getAllWordExceptions = () => {
 
     const resultArrayExcWords = []

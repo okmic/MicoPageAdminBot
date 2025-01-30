@@ -3,7 +3,7 @@ import {  ITelegramAdminContentUpdateHandleMassUpdateWithSite, ITelegramAdminCon
 import { Content, User } from "@prisma/client"
 import { TKeysXlsxContentMassUpdate } from "../xlsx/types"
 
-export type TAdminTelegramOneTurnActions = "loadSiteZip" | "addUserFtpServer"
+export type TAdminTelegramOneTurnActions = "loadSiteZip" | "addUserFtpServer" | "deployToSite"
 
 export interface SessionData {
 

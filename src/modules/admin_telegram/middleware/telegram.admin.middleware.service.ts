@@ -86,7 +86,7 @@ class AdminTelegramMiddleware {
                 ) {
                     return await ctx.reply(
                         'Вы можете выбрать опцию:', {
-                        reply_markup: adminTelegramMenuService.createMainMenu()
+                            reply_markup: adminTelegramMenuService.createMainMenu()
                         }
                     ) 
                 } else return await next()
