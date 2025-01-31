@@ -31,7 +31,7 @@ export async function getContent(id: number) {
     if(!id) throw new Error()
     const content = await PRISMA.content.findUnique({
       where: {
-        id,
+        id
       }
     })
 

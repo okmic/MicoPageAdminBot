@@ -3,7 +3,7 @@ import {Client} from 'basic-ftp'
 import fs from 'fs/promises'
 import * as path from 'path'
 
-export class FTPService {
+export default class FTPService {
     private client: Client
     private itemsToUpload: string[]
     private remoteBasePath: string

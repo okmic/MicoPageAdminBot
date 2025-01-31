@@ -1,4 +1,5 @@
 import { ErrorTelegramStopExecution } from "../../../errors";
+import FTPService from "../../../ftp/ftp.service";
 import { universalMsgs } from "../../controllers/admin.telegram.messages.controller";
 import { MyContext } from "../../types";
 import { getContent, getSiteContent } from "../../utils/telegram.content.helper";
@@ -26,7 +27,20 @@ export default class AdminTelegramDeployButtons {
             return this.ctx.answerCallbackQuery('Контент не найден.')
         }
 
-        await this.ctx.reply(String(id))
+        //build project
+        await this.ctx.reply("Начинаю сборку проекта...")
+        
+        //con to ftp
+        await this.ctx.reply("Подключение к ftp серверу...")
+        /*      const resultDeploy = await new FTPService() */
+        
+        //deploying
+        await this.ctx.reply("Развертывание на ftp сервере...")
+
+        //deployer
+        await this.ctx.reply("Все прошло успешно, сайт обновлен!")
+
         throw new ErrorTelegramStopExecution()
+
     }
 }
