@@ -1,5 +1,3 @@
-import { PrismaClient } from "@prisma/client"
-import { Context } from "grammy"
 import ejs from "ejs"
 import fs from "fs"
 import { InlineKeyboard } from "grammy"
@@ -8,7 +6,6 @@ import { getSiteContent } from "../../utils/telegram.content.helper"
 import { MyContext } from "../../types"
 
 class TelegramAdminContentService {
-
 
     private async renderTemplate(templateName: string, data: object): Promise<string> {
         const templatePath = getPath("systemTempsFiles") + `/${templateName}.ejs`

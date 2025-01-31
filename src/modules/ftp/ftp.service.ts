@@ -36,8 +36,6 @@ export default class FTPService {
         } finally {
             this.close()
         }
-    
-        //need to close conn
     }
 
     private async uploadFile(localFilePath: string, remoteFilePath: string) {
