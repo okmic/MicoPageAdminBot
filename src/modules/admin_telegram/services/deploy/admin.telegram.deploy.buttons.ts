@@ -1,8 +1,8 @@
 import { ErrorTelegramStopExecution } from "../../../errors";
-import FTPService from "../../../ftp/ftp.service";
+import micoPageApiService from "../../../api/mico.page.api"
 import { universalMsgs } from "../../controllers/admin.telegram.messages.controller";
 import { MyContext } from "../../types";
-import { getContent, getSiteContent } from "../../utils/telegram.content.helper";
+import { getContent } from "../../utils/telegram.content.helper";
 
 export default class AdminTelegramDeployButtons {
 
@@ -29,7 +29,6 @@ export default class AdminTelegramDeployButtons {
 
         //build project
         await this.ctx.reply("Начинаю сборку проекта...")
-        
         //con to ftp
         await this.ctx.reply("Подключение к ftp серверу...")
         /*      const resultDeploy = await new FTPService() */

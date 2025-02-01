@@ -6,6 +6,7 @@ import { telegramMenuMsgs, universalMsgs } from "../controllers/admin.telegram.m
 import adminTelegramStorageController from "../controllers/admin.telegram.storage.controller"
 import AdminTelegramFtpService from "./deploy/admin.telegram.ftp.service"
 import { PrismaClient } from "@prisma/client"
+import MicoPageApiService from "../services/content/site.init"
 
 class AdminTelegramMenuService {
 
@@ -47,6 +48,9 @@ class AdminTelegramMenuService {
 
             case telegramMenuMsgs.downloadSite:
                 adminTelegramStorageController.userTelegramClearStorage(ctx)
+                const user = ctx.session.storageUsersData[ctx.from.id]
+                await new MicoPageApiService(user.id).initDefaultSite()
+
                 ctx.session.userAction[ctx.from.id] = {key: "loadSiteZip"}
                 await ctx.reply("Вы выбрали загрузку сайта. Пожалуйста, загрузите сайт как ZIP-файл.")
                 return new ErrorTelegramStopExecution()
@@ -57,15 +61,15 @@ class AdminTelegramMenuService {
                 const prisma = new PrismaClient()
                 const user = ctx.session.storageUsersData[ctx.from.id]
                 if(!user) return await ctx.reply(universalMsgs.defaultErrorMsg)
-                const contents = await prisma.content.findMany({
+                const sites = await prisma.site.findMany({
                     where: {
                         userId: user.id
                     }
                 })
-                if(contents.length === 0) return await ctx.reply("У вас нет активных сайтов.")
+                if(sites.length === 0) return await ctx.reply("У вас нет активных сайтов.")
 
                 const buttons = new InlineKeyboard()
-                contents.map(c => buttons.text(c.logoName, `deployContentId ${c.id}`))
+                sites.map(s => buttons.text(s.name, `deployContentId ${s.id}`))
 
                 await ctx.reply(`Выберите сайт из списка: 👇`, {reply_markup: buttons})
 
