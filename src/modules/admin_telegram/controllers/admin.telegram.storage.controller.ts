@@ -12,9 +12,8 @@ class AdminTelegramStorageController {
     async handleAction(ctx: MyContext) {
         
         if(!ctx.session[ctx.from.id]) return
-
-        const action = ctx.session.userAction[ctx.from.id]
         
+        const action = ctx.session.userAction[ctx.from.id]
         try {
             switch(action.key) {
                 case "loadSiteZip":

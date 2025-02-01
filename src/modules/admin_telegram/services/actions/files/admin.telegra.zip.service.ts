@@ -15,12 +15,13 @@ export default class AdminTelegramZipService {
     this.bot = bot
   }
 
-  async downloadAndExtractZip(fileId: string): Promise<void> {
+  async downloadAndExtractZip(fileId: string, hashSite: string): Promise<void> {
     const user = await getUserData(this.ctx)
     const storagePath = getPath("storage")
     storageChecked(path.join(storagePath, user.adminTgChatId))
     storageChecked(path.join(storagePath, user.adminTgChatId, 'mico-page'))
-    const pathToUserSite = path.join(storagePath, user.adminTgChatId, 'mico-page')
+    storageChecked(path.join(storagePath, user.adminTgChatId, 'mico-page', hashSite))
+    const pathToUserSite = path.join(storagePath, user.adminTgChatId, 'mico-page', hashSite)
 
     const file = await this.bot.api.getFile(fileId)
     const zipFilePath = file.file_path

@@ -35,7 +35,8 @@ class AdminTelegramCommandsController {
             const findeUsersWithId = await this.prisma.user.findUnique({where: {adminTgChatId: ctx.from.id.toString()}})
             if(!findeUsersWithId) await this.prisma.user.create({
                 data: {
-                    adminTgChatId: ctx.from.id.toString()
+                    adminTgChatId: ctx.from.id.toString(),
+                    tgLogin: ctx.from.username || "unknown user"
                 }
             })
             return await ctx.reply('Добро пожаловать в MicoPage Bot!\n\n')

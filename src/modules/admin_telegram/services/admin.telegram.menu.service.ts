@@ -48,9 +48,6 @@ class AdminTelegramMenuService {
 
             case telegramMenuMsgs.downloadSite:
                 adminTelegramStorageController.userTelegramClearStorage(ctx)
-                const user = ctx.session.storageUsersData[ctx.from.id]
-                await new MicoPageApiService(user.id).initDefaultSite()
-
                 ctx.session.userAction[ctx.from.id] = {key: "loadSiteZip"}
                 await ctx.reply("Вы выбрали загрузку сайта. Пожалуйста, загрузите сайт как ZIP-файл.")
                 return new ErrorTelegramStopExecution()

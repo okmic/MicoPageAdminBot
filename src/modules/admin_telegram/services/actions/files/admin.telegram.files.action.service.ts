@@ -1,10 +1,12 @@
 import { Bot } from "grammy"
 import { MyContext } from "../../../types"
+import { PrismaClient } from "@prisma/client"
 import { TKeysXlsxContentMassUpdate } from "../../../../xlsx/types"
 import AdminTelegramZipService from "./admin.telegra.zip.service"
 import AdminTelegramImgService from "./admin.telegra.img.service"
 import AdminTelegramXlsxService from "./admin.telegra.xlsx.service"
 import adminTelegramStorageController from "../../../controllers/admin.telegram.storage.controller"
+import MicoPageApiService from "../../content/site.init"
 
 export default class AdminTelegramFilesActionService {
 
@@ -55,8 +57,11 @@ export default class AdminTelegramFilesActionService {
         await ctx.reply('Загружаю файл...')
 
         try {
+            const user = ctx.session.storageUsersData[ctx.from.id]
+            const prisma = new PrismaClient()
+            const site = await new MicoPageApiService(user.id, prisma).initDefaultSite()
 
-            await new AdminTelegramZipService(ctx, this.bot).downloadAndExtractZip(fileId)
+            await new AdminTelegramZipService(ctx, this.bot).downloadAndExtractZip(fileId, site.siteHash)
 
             return await ctx.reply('Сайт загружен!')
 
