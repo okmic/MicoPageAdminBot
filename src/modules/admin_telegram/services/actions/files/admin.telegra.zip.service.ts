@@ -3,7 +3,6 @@ import path from 'path'
 import { Bot } from 'grammy'
 import { getPath, storageChecked } from '../../../../../helper'
 import { MyContext } from '../../../types'
-import { getUserData } from '../../../../utils/user.helper'
 import { downloadFile } from '../../../utils/telegram.files.helper'
 
 export default class AdminTelegramZipService {
@@ -16,7 +15,8 @@ export default class AdminTelegramZipService {
   }
 
   async downloadAndExtractZip(fileId: string, hashSite: string): Promise<void> {
-    const user = await getUserData(this.ctx)
+    const {user} = this.ctx.session.storageUsersData[this.ctx.from.id]
+
     const storagePath = getPath("storage")
     storageChecked(path.join(storagePath, user.adminTgChatId))
     storageChecked(path.join(storagePath, user.adminTgChatId, 'mico-page'))

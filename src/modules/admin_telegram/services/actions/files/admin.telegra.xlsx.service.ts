@@ -5,7 +5,6 @@ import { MyContext } from '../../../types'
 import { v4 } from 'uuid'
 import { TKeysXlsxContentMassUpdate } from '../../../../xlsx/types'
 import xlsxService from '../../../../xlsx/xlsx.service'
-import { getUserData } from '../../../../utils/user.helper'
 import { downloadFile, formatDate } from '../../../utils/telegram.files.helper'
 
 export default class AdminTelegramXlsxService {
@@ -22,7 +21,7 @@ export default class AdminTelegramXlsxService {
 
   async saveXlsx() {
     try {
-      const user = await getUserData(this.ctx)
+      const {user} = this.ctx.session.storageUsersData[this.ctx.from.id]
       const storagePath = getPath("adminTelegramXlsx")
       storageChecked(path.join(storagePath, user.adminTgChatId))
       storageChecked(path.join(storagePath, user.adminTgChatId, 'xlsx'))

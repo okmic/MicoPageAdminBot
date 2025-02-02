@@ -4,10 +4,11 @@ import { InlineKeyboard } from "grammy"
 import { getPath } from "../../../../helper"
 import { getSiteContent } from "../../utils/telegram.content.helper"
 import { MyContext } from "../../types"
+import { Content } from "@prisma/client"
 
 class TelegramAdminContentService {
 
-    private async renderTemplate(templateName: string, data: object): Promise<string> {
+    private async renderTemplate(templateName: string, data: Content): Promise<string> {
         const templatePath = getPath("systemTempsFiles") + `/${templateName}.ejs`
         const template = fs.readFileSync(templatePath, 'utf-8')
         return ejs.render(template, data)
@@ -34,12 +35,12 @@ class TelegramAdminContentService {
 
     async handleCallbackQuery(ctx: MyContext) {
 
-        const content = await getSiteContent(ctx.session.storageUsersData[ctx.from.id])
+        const userData = ctx.session.storageUsersData[ctx.from.id]
        
-        if (!content) {
+        if (!userData || !userData.user || !userData.selectedSite) {
             return ctx.answerCallbackQuery('Контент не найден.')
         }
-        
+        const {content} = await getSiteContent(userData.user.id, userData.selectedSite.siteId, userData.selectedSite.contentId) 
         const action = ctx.callbackQuery.data
 
         let message: string

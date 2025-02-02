@@ -1,31 +1,47 @@
-import { PrismaClient, User } from "@prisma/client"
+import { Content, PrismaClient, Site, User } from "@prisma/client"
 const PRISMA = new PrismaClient()
 
-export async function getSiteContent(user: User | undefined) {
+export async function getSiteContent(userId: number, siteId: number, contentId: number): Promise<{user: User, site: Site, content: Content}> {
   try {
-    if(!user) throw new Error()
-    const site = await PRISMA.user.findUnique({
-      where: {
-        id: user.id,
-      }, 
-      include: {
-        site: {
-          include: {
-            content: {
-              include: {
-                products: true,
-                services: true,
-                socialMedia: true,
-                works: true
-              }
-            }
+    if(!userId || !siteId || !contentId ) throw new Error()
+
+      const [user, site, content] = await PRISMA.$transaction([
+
+        PRISMA.user.findUnique({
+          where: {
+            id: userId,
           }
-        }
+        }),
 
-      }
-    })
+        PRISMA.site.findUnique({
+            where: {
+              id: siteId
+            }
+        }),
 
-    return site
+        PRISMA.content.findUnique({
+          where: {
+            id: contentId
+          },
+          include: {
+            services: {
+              include: {
+                items: true
+              }
+            },
+            works: true,
+            products: true,
+            socialMedia: true
+          }
+        })
+
+      ])
+
+
+      if(!user || !site || !content) throw new Error()
+
+     return {user, site, content}
+     
   } catch (e) {
     throw e
   }

@@ -3,7 +3,6 @@ import path from 'path'
 import { getPath, storageChecked } from '../../../../../helper'
 import { MyContext } from '../../../types'
 import { v4 } from 'uuid'
-import { getUserData } from '../../../../utils/user.helper'
 import { downloadFile, formatDate } from '../../../utils/telegram.files.helper'
 
 export default class AdminTelegramImgService {
@@ -20,7 +19,7 @@ export default class AdminTelegramImgService {
 
   async saveImage() {
     
-    const user = await getUserData(this.ctx)
+    const {user} = this.ctx.session.storageUsersData[this.ctx.from.id]
     const storagePath = getPath("storage")
     storageChecked(path.join(storagePath, user.adminTgChatId))
     storageChecked(path.join(storagePath, user.adminTgChatId, 'images'))

@@ -21,11 +21,15 @@ class AdminTelegramMiddleware {
                 },
                 include: {
                     childUsers: true,
-                    parentUser: true
+                    parentUser: true,
+                    site: true,
+                    ftpServers: true
                 }
             })
 
             //если у юзера есть родитель то берем его чат id
+            if(user.parentUser) user.id = user.parentUser.id
+            if(user.parentUser) user.isDisabled = user.parentUser.isDisabled
             if(user.parentUser) user.adminTgChatId = user.parentUser.adminTgChatId
 
             let isAuth = false
@@ -33,7 +37,10 @@ class AdminTelegramMiddleware {
 
             if(!isAuth) return await ctx.reply(`Доброго времени суток ${ctx.from.first_name}\n\nК сожалению, ваша подписка не активна. Для активации доступа к боту, пожалуйста, обратитесь к менеджеру продукта в Telegram: @MicoDevProd\n\n\nС уважением,\nКоманда поддержки MicoPage`)
             else {
-                if(!ctx.session.storageUsersData[ctx.from.id]) ctx.session.storageUsersData[ctx.from.id] = user
+                if(!ctx.session.storageUsersData[ctx.from.id] || !ctx.session.storageUsersData[ctx.from.id].user) {
+                    ctx.session.storageUsersData[ctx.from.id] = {user}
+                    ctx.session.userAction[ctx.from.id] = {key: "chooseCreateSite"}
+                }
                 return await next()
             }
 

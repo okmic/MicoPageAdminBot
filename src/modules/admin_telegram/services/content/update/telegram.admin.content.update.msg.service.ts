@@ -268,14 +268,14 @@ class TelegramAdminContentUpdateMsgService {
     }
 
     private async updateContent(key: string, value: string) {
-        const userContent = await getSiteContent(this.ctx.session.storageUsersData[this.ctx.from.id])
-
+        const userData = this.ctx.session.storageUsersData[this.ctx.from.id]
+        if(!userData.selectedSite) throw new Error()
         await this.prisma.content.update({
             data: {
                 [key]: value,
             },
             where: {
-                id: userContent.id,
+                id: userData.selectedSite.contentId,
             },
         })
 

@@ -56,11 +56,11 @@ class AdminTelegramMenuService {
 
                 ctx.session.userAction[ctx.from.id] = {key: "deployToSite"}
                 const prisma = new PrismaClient()
-                const user = ctx.session.storageUsersData[ctx.from.id]
-                if(!user) return await ctx.reply(universalMsgs.defaultErrorMsg)
+                const userData = ctx.session.storageUsersData[ctx.from.id]
+                if(!userData || !userData.user || !userData.selectedSite) return await ctx.reply(universalMsgs.defaultErrorMsg)
                 const sites = await prisma.site.findMany({
                     where: {
-                        userId: user.id
+                        userId: userData.user.id
                     }
                 })
                 if(sites.length === 0) return await ctx.reply("У вас нет активных сайтов.")

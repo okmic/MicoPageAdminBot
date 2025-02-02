@@ -1,9 +1,10 @@
-import { Bot } from "grammy"
+import { Bot, InlineKeyboard } from "grammy"
 import { MyContext } from "../../types"
 import TelegramAdminContentUpdateMsgService from "../content/update/telegram.admin.content.update.msg.service"
 import adminTelegramMenuService from "../admin.telegram.menu.service"
 import { ErrorTelegramStopExecution } from "../../../errors"
 import adminTelegramFtpService from "../deploy/admin.telegram.ftp.service"
+import { PrismaClient, User } from "@prisma/client"
 
 export default class AdminTelegramMessageActionService {
 
@@ -39,6 +40,24 @@ export default class AdminTelegramMessageActionService {
             const key = ctx.session.userAction[ctx.from.id].key
 
             switch (key) {
+                case "chooseCreateSite": {
+                    const user = ctx.session.storageUsersData[ctx.from.id].user
+                    if(!user) return
+                    const PRISMA = new PrismaClient()
+                    const sites = await PRISMA.site.findMany({
+                        where: {
+                            userId: user.id
+                        }
+                    })
+                    if(!sites || sites.length === 0) return
+                    
+                    const keyboards = new InlineKeyboard()
+                    sites.forEach(s => keyboards.text(s.name, `chooseCreateSite id=${s.id}`))
+
+                    await ctx.reply("Выберите сайт и мы продолжим", {reply_markup: keyboards})
+
+                    break
+                }
                 case "loadSiteZip":
                     if(ctx.message.text) {
                         await ctx.reply("Мне нужен zip файл в котором находится твой сайт")
@@ -46,8 +65,6 @@ export default class AdminTelegramMessageActionService {
                     }
                     break
                 case "addUserFtpServer":
-            console.log(key)
-
                     const msg = ctx.message.text
                     console.log(msg)
                     if (!msg || adminTelegramFtpService.validateFtpCredentials(msg)) {

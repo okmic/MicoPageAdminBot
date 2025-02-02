@@ -1,14 +1,20 @@
 import { Context, SessionFlavor } from "grammy"
 import {  ITelegramAdminContentUpdateHandleMassUpdateWithSite, ITelegramAdminContentUpdateHandleString } from "./services/content/update/types"
-import { Content, User } from "@prisma/client"
+import { Content, Prisma, User } from "@prisma/client"
 import { TKeysXlsxContentMassUpdate } from "../xlsx/types"
 
-export type TAdminTelegramOneTurnActions = "loadSiteZip" | "addUserFtpServer" | "deployToSite"
+export type TAdminTelegramOneTurnActions =  "chooseCreateSite" | "loadSiteZip" | "addUserFtpServer" | "deployToSite"
 
 export interface SessionData {
 
   storageUsersData: {
-    [userId: string]: User
+    [userId: string]: {
+      user?: User 
+      selectedSite?: {
+        siteId: number
+        contentId: number
+      }
+    }
   }
 
   userAction: {

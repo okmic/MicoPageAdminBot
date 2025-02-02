@@ -57,7 +57,7 @@ export default class AdminTelegramFilesActionService {
         await ctx.reply('Загружаю файл...')
 
         try {
-            const user = ctx.session.storageUsersData[ctx.from.id]
+            const {user} = ctx.session.storageUsersData[ctx.from.id]
             const prisma = new PrismaClient()
             const site = await new MicoPageApiService(user.id, prisma).initDefaultSite()
 
