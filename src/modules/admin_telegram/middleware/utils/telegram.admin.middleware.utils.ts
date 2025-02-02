@@ -5,10 +5,10 @@ import { universalMsgs } from "../../controllers/admin.telegram.messages.control
 
 export const handlerChooseCreateSiteMiddleware = async (ctx: MyContext, next: NextFunction) => {
 
-    if(ctx.message?.text && ctx.message.text === "/load-site") return await next()
+    if(ctx.message?.text && (ctx.message.text === "/loadsite" || ctx.message.text === "/start")) return await next()
     if(ctx.session.userAction[ctx.from.id] && ctx.session.userAction[ctx.from.id].key === "loadSiteZip") return await next()   
         
-    const { selectedSite, user } = ctx.session.storageUsersData[ctx.from.id]
+    const userData = ctx.session.storageUsersData[ctx.from.id]
     const initDoAction = ctx.session.initDoAction[ctx.from.id]
     const buttonHandle = ctx.callbackQuery?.data
 
@@ -20,11 +20,11 @@ export const handlerChooseCreateSiteMiddleware = async (ctx: MyContext, next: Ne
 
         return await ctx.reply(universalMsgs.helloInitMsgHTML, {parse_mode: "HTML"})
     }
-    else if(initDoAction && initDoAction.key === "chooseCreateSite" || !selectedSite) {
+    else if(initDoAction && initDoAction.key === "chooseCreateSite" || !userData || !userData.selectedSite) {
         const PRISMA = new PrismaClient()
         const sites = await PRISMA.site.findMany({
             where: {
-                userId: user.id
+                userId: userData.user.id
             }
         })
         if (!sites || sites.length === 0) return await ctx.reply(universalMsgs.notSitesInitMsg)

@@ -53,20 +53,19 @@ class AdminTelegramMenuService {
                 return new ErrorTelegramStopExecution()
                 
             case telegramMenuMsgs.deployToFtp: {
-
                 ctx.session.userAction[ctx.from.id] = {key: "deployToSite"}
                 const prisma = new PrismaClient()
                 const userData = ctx.session.storageUsersData[ctx.from.id]
                 if(!userData || !userData.user || !userData.selectedSite) return await ctx.reply(universalMsgs.defaultErrorMsg)
-                const sites = await prisma.site.findMany({
+                const ftpServers = await prisma.ftpServer.findMany({
                     where: {
                         userId: userData.user.id
                     }
                 })
-                if(sites.length === 0) return await ctx.reply("У вас нет активных сайтов.")
+                if(ftpServers.length === 0) return await ctx.reply("У вас нет активных ftp серверов. Добавьте доступы к ftp, в меню/настройки\n\n/menu")
 
                 const buttons = new InlineKeyboard()
-                sites.map(s => buttons.text(s.name, `deployContentId ${s.id}`))
+                ftpServers.map(f => buttons.text(f.ftpHost, `deploySite ${f.id}`))
 
                 await ctx.reply(`Выберите сайт из списка: 👇`, {reply_markup: buttons})
 

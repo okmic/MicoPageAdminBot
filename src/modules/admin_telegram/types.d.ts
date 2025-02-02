@@ -1,6 +1,6 @@
 import { Context, SessionFlavor } from "grammy"
 import {  ITelegramAdminContentUpdateHandleMassUpdateWithSite, ITelegramAdminContentUpdateHandleString } from "./services/content/update/types"
-import { Content, Prisma, User } from "@prisma/client"
+import { Content, User } from "@prisma/client"
 import { TKeysXlsxContentMassUpdate } from "../xlsx/types"
 
 export type TAdminTelegramOneTurnActions =  "loadSiteZip" | "addUserFtpServer" | "deployToSite"

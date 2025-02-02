@@ -17,7 +17,7 @@ class AdminTelegramCommandsController {
     async handleCommands() {
         this.bot.command('start', async (ctx) => await this.startCommand(ctx as MyContext))
         this.bot.command('get-content', async (ctx) => await telegramAdminContentService.getContentDetailsCommand(ctx))
-        this.bot.command('load-site', async (ctx) => await this.loadSiteCommand(ctx))
+        this.bot.command('loadsite', async (ctx) => await this.loadSiteCommand(ctx))
     }
 
     private async loadSiteCommand(ctx: MyContext) {

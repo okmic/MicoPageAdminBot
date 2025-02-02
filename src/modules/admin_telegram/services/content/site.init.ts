@@ -9,11 +9,10 @@ export default class SiteInit {
   constructor(userId: number, prisma: PrismaClient) {
     this.prisma = prisma
 
-    const siteHash = v4()
     this.site = {
-      siteHash,
+      siteHash:  v4(),
       Type: 'EJS',
-      pegesStringArray: [`${siteHash}/index.ejs`],
+      pegesStringArray: [`index.ejs`],
       userId: userId,
     }
     this.content = this.createDefaultContent()
@@ -27,7 +26,7 @@ export default class SiteInit {
       email: "info@micopage.com",
       mainBlockTitle: "Mico Page 👋",
       mainBlockDescription: "Choose a template and make a website",
-      mainBlockImgUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSQHPxTQOIal5YuQgMVMiS3GLf-NkkJitBRjQ&s",
+      mainBlockImgUrl: "https://optim.tildacdn.com/tild6633-3762-4264-b663-663065623130/-/resize/572x/-/format/webp/image.png",
       services: {
         create: [this.createDefaultService()],
       },
@@ -49,7 +48,7 @@ export default class SiteInit {
       items: {
         create: [this.createDefaultItem()],
       },
-      imgUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSQHPxTQOIal5YuQgMVMiS3GLf-NkkJitBRjQ&s",
+      imgUrl: "https://optim.tildacdn.com/tild6633-3762-4264-b663-663065623130/-/resize/572x/-/format/webp/image.png",
     }
   }
 
@@ -62,7 +61,7 @@ export default class SiteInit {
   private createDefaultWork(): Prisma.ContentWorkCreateWithoutContentInput {
     return {
       title: "Дефолтная работа",
-      imgUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSQHPxTQOIal5YuQgMVMiS3GLf-NkkJitBRjQ&s",
+      imgUrl: "https://optim.tildacdn.com/tild6633-3762-4264-b663-663065623130/-/resize/572x/-/format/webp/image.png",
     }
   }
 
@@ -77,7 +76,7 @@ export default class SiteInit {
   private createDefaultProduct(): Prisma.SiteProductsCreateWithoutContentInput {
     return {
       title: "MicoPage",
-      imgUrl: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSQHPxTQOIal5YuQgMVMiS3GLf-NkkJitBRjQ&s",
+      imgUrl: "https://optim.tildacdn.com/tild6633-3762-4264-b663-663065623130/-/resize/572x/-/format/webp/image.png",
       description: "Дефолтное описание продукта",
       price: 3000,
     }
