@@ -3,6 +3,7 @@ import { KeyContentUpdateWord } from "../types";
 class TelegramExecuteWordsHelper {
 
     keysUpdateWords: KeyContentUpdateWord[] = [
+        {"word": "Обновить данные 🔄", "key": "someUpdate"},
         { "word": "обновить", "key": "someUpdate" },
         { "word": "обнови", "key": "someUpdate" },
         { "word": "update", "key": "someUpdate" },

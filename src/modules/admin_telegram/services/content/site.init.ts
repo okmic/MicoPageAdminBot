@@ -85,13 +85,15 @@ export default class SiteInit {
 
   public async initDefaultSite(): Promise<Site> {
     try {
+      const content = await this.prisma.content.create({
+        data: this.content
+      })
+
       return await this.prisma.site.create({
         data: {
           ...this.site,
-          content: {
-            create: this.content,
-          },
-        },
+          contentId: content.id
+        }
       })
 
     } catch (e) {

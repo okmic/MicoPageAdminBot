@@ -6,7 +6,7 @@ import AdminTelegramZipService from "./admin.telegra.zip.service"
 import AdminTelegramImgService from "./admin.telegra.img.service"
 import AdminTelegramXlsxService from "./admin.telegra.xlsx.service"
 import adminTelegramStorageController from "../../../controllers/admin.telegram.storage.controller"
-import MicoPageApiService from "../../content/site.init"
+import SiteInit from "../../content/site.init"
 
 export default class AdminTelegramFilesActionService {
 
@@ -59,13 +59,14 @@ export default class AdminTelegramFilesActionService {
         try {
             const {user} = ctx.session.storageUsersData[ctx.from.id]
             const prisma = new PrismaClient()
-            const site = await new MicoPageApiService(user.id, prisma).initDefaultSite()
+            const site = await new SiteInit(user.id, prisma).initDefaultSite()
 
             await new AdminTelegramZipService(ctx, this.bot).downloadAndExtractZip(fileId, site.siteHash)
 
             return await ctx.reply('Сайт загружен!')
 
         } catch (e) {
+            console.log(e)
             await ctx.reply('Произошла ошибка при распаковке файла.')
         } finally {
             adminTelegramStorageController.userTelegramClearStorage(ctx)

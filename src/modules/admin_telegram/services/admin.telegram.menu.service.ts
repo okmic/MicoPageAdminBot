@@ -23,7 +23,7 @@ class AdminTelegramMenuService {
     private settingsMeny() {
         return new Keyboard()
             .row()
-            .text(telegramMenuMsgs.downloadSite)
+            .text(telegramMenuMsgs.downloadSiteZip)
             .row()
             .text(telegramMenuMsgs.deployToFtp)
             .row()
@@ -46,7 +46,7 @@ class AdminTelegramMenuService {
                 await ctx.reply("MicoPageBot TM")
                 return new ErrorTelegramStopExecution()
 
-            case telegramMenuMsgs.downloadSite:
+            case telegramMenuMsgs.downloadSiteZip:
                 adminTelegramStorageController.userTelegramClearStorage(ctx)
                 ctx.session.userAction[ctx.from.id] = {key: "loadSiteZip"}
                 await ctx.reply("Вы выбрали загрузку сайта. Пожалуйста, загрузите сайт как ZIP-файл.")

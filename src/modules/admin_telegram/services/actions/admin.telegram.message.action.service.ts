@@ -38,26 +38,7 @@ export default class AdminTelegramMessageActionService {
         try {
             if(ctx.session.userAction[ctx.from.id]) return
             const key = ctx.session.userAction[ctx.from.id].key
-
             switch (key) {
-                case "chooseCreateSite": {
-                    const user = ctx.session.storageUsersData[ctx.from.id].user
-                    if(!user) return
-                    const PRISMA = new PrismaClient()
-                    const sites = await PRISMA.site.findMany({
-                        where: {
-                            userId: user.id
-                        }
-                    })
-                    if(!sites || sites.length === 0) return
-                    
-                    const keyboards = new InlineKeyboard()
-                    sites.forEach(s => keyboards.text(s.name, `chooseCreateSite id=${s.id}`))
-
-                    await ctx.reply("Выберите сайт и мы продолжим", {reply_markup: keyboards})
-
-                    break
-                }
                 case "loadSiteZip":
                     if(ctx.message.text) {
                         await ctx.reply("Мне нужен zip файл в котором находится твой сайт")

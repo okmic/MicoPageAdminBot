@@ -3,7 +3,7 @@ import { KeyContentUpdate, KeyContentUpdateWord, MyContext } from "../types"
 import adminTelegramMenuService from "../services/admin.telegram.menu.service"
 import { PrismaClient } from "@prisma/client"
 import telegramExecuteWordsHelper from "../utils/telegram.execute.words.helper"
-import { getAllWordExceptions } from "../controllers/admin.telegram.messages.controller"
+import { getAllWordExceptions, telegramMenuMsgs } from "../controllers/admin.telegram.messages.controller"
 
 class AdminTelegramMiddleware {
 
@@ -37,9 +37,9 @@ class AdminTelegramMiddleware {
 
             if(!isAuth) return await ctx.reply(`Доброго времени суток ${ctx.from.first_name}\n\nК сожалению, ваша подписка не активна. Для активации доступа к боту, пожалуйста, обратитесь к менеджеру продукта в Telegram: @MicoDevProd\n\n\nС уважением,\nКоманда поддержки MicoPage`)
             else {
-                if(!ctx.session.storageUsersData[ctx.from.id] || !ctx.session.storageUsersData[ctx.from.id].user) {
+                if(!ctx.session.storageUsersData[ctx.from.id] || !ctx.session.storageUsersData[ctx.from.id].user || !ctx.session.storageUsersData[ctx.from.id].selectedSite) {
                     ctx.session.storageUsersData[ctx.from.id] = {user}
-                    ctx.session.userAction[ctx.from.id] = {key: "chooseCreateSite"}
+                    ctx.session.initDoAction[ctx.from.id] = {key: "chooseCreateSite"}
                 }
                 return await next()
             }
@@ -54,7 +54,7 @@ class AdminTelegramMiddleware {
             if (!ctx.message || !ctx.message.text) return await next()
             const excWords = getAllWordExceptions() 
 
-            if(excWords.includes(ctx.message.text)) return await next()
+            if(excWords.includes(ctx.message.text) && ctx.message.text !== telegramMenuMsgs.updateData) return await next()
             const keysUpdateWords: KeyContentUpdateWord[] = telegramExecuteWordsHelper.keysUpdateWords
     
             const text = ctx.message.text.toLocaleLowerCase()
